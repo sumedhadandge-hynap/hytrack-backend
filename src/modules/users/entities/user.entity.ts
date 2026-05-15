@@ -4,7 +4,11 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+
+import { Company } from '../../auth/entities/company.entity';
 
 @Entity('users')
 export class User {
@@ -15,27 +19,44 @@ export class User {
   @Column()
   first_name!: string;
 
-  @Column({ nullable: true })
+  @Column({
+    nullable: true,
+  })
   last_name!: string;
 
-  @Column({ unique: true })
+  @Column({
+    unique: true,
+  })
   email!: string;
 
   @Column()
   password_hash!: string;
 
-  @Column({ default: true })
+  @Column({
+    default: true,
+  })
   is_active!: boolean;
 
-  @Column({ nullable: true })
+  @Column({
+    nullable: true,
+  })
   mobile?: string;
 
-  @Column({ nullable: true })
-  role?: string;
-
-  @Column({ nullable: true })
+  @Column({
+    nullable: true,
+  })
   status?: string;
 
+  @Column({
+    default: false,
+  })
+  is_super_admin!: boolean;
+
+  @ManyToOne(() => Company)
+  @JoinColumn({
+    name: 'company_id',
+  })
+  company!: Company;
 
   @CreateDateColumn()
   created_at!: Date;
@@ -43,9 +64,13 @@ export class User {
   @UpdateDateColumn()
   updated_at!: Date;
 
-  @Column({ nullable: true })
+  @Column({
+    nullable: true,
+  })
   created_by?: number;
 
-  @Column({ nullable: true })
+  @Column({
+    nullable: true,
+  })
   updated_by?: number;
 }

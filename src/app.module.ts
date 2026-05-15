@@ -58,7 +58,7 @@ import { UsersModule } from './modules/users/users.module';
 
     // 2. Add them to the imports array
     AuthModule,
-    UsersModule,
+    // UsersModule,
   ],
 })
 export class AppModule { }
