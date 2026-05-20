@@ -1,23 +1,32 @@
 import {
-    IsNotEmpty,
-    IsOptional,
-    IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  Matches,
 } from 'class-validator';
 
 export class CreatePermissionDto {
-    @IsString()
-    @IsNotEmpty()
-    name!: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  name!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    code!: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  @Matches(/^[a-z0-9_]+$/, {
+    message: 'code must contain only lowercase letters, numbers and underscore',
+  })
+  code!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    module!: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  module!: string;
 
-    @IsString()
-    @IsOptional()
-    description?: string;
+  @IsString()
+  @IsOptional()
+  @MaxLength(255)
+  description?: string;
 }

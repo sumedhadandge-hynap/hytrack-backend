@@ -10,3 +10,4 @@ export * from './role-permissions.schema';
 export * from './menus.schema';
 export * from './audit-logs.schema';
 export * from './master.schema';
+export * from '../relations';
