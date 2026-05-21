@@ -9,6 +9,13 @@ import { RolesModule } from './modules/roles/roles.module';
 import { UsersModule } from './modules/users/users.module';
 import { SidebarModule } from './modules/sidebar/sidebar.module';
 import { PublicModule } from './modules/public/public.module';
+import { AppTypesModule } from './modules/app-types/app-types.module';
+import { AppsModule } from './modules/apps/apps.module';
+import { AppStepsModule } from './modules/app-steps/app-steps.module';
+import { AppFieldsModule } from './modules/app-fields/app-fields.module';
+import { StepApproversModule } from './modules/step-approvers/step-approvers.module';
+import { StepDiscussionsModule } from './modules/step-discussions/step-discussions.module';
+import { AppVersionsModule } from './modules/app-versions/app-versions.module';
 
 
 @Module({
@@ -23,7 +30,14 @@ import { PublicModule } from './modules/public/public.module';
     RolesModule,
     UsersModule,
     SidebarModule,
-    PublicModule
+    PublicModule,
+    AppTypesModule,
+    AppsModule,
+    AppStepsModule,
+    AppFieldsModule,
+    StepApproversModule,
+    StepDiscussionsModule,
+    AppVersionsModule,
 
   ],
 })
