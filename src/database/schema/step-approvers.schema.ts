@@ -4,6 +4,7 @@ import {
   bigint,
   uuid,
   timestamp,
+  varchar,
 } from 'drizzle-orm/pg-core';
 
 import { appSteps } from './app-steps.schema';
@@ -37,6 +38,19 @@ export const stepApprovers = pgTable('step_approvers', {
     mode: 'number',
   })
     .references(() => users.id),
+
+  approval_type: varchar('approval_type', {
+    length: 50,
+  })
+    .default('any'),
+
+  rejection_action: varchar('rejection_action', {
+    length: 50,
+  })
+    .default('previous'),
+
+  order_index: integer('order_index')
+    .default(1),
 
   created_at: timestamp('created_at')
     .defaultNow(),

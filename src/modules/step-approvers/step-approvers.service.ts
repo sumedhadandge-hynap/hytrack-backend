@@ -4,15 +4,15 @@ import {
 } from '@nestjs/common';
 
 import { eq }
-from 'drizzle-orm';
+  from 'drizzle-orm';
 
 import type { DbType } from 'src/database/database.module';
 
 import { stepApprovers }
-from 'src/database/schema';
+  from 'src/database/schema';
 
 import { CreateStepApproverDto }
-from './dto/create-step-approver.dto';
+  from './dto/create-step-approver.dto';
 
 @Injectable()
 export class StepApproversService {
@@ -20,7 +20,7 @@ export class StepApproversService {
   constructor(
     @Inject('DB')
     private readonly db: DbType,
-  ) {}
+  ) { }
 
   async create(dto: CreateStepApproverDto) {
 
@@ -37,8 +37,14 @@ export class StepApproversService {
           user_id:
             dto.user_id ?? null,
 
-          // approval_level:
-          //   dto.approval_level ?? 1,
+          approval_type:
+            dto.approval_type ?? 'any',
+
+          rejection_action:
+            dto.rejection_action ?? 'previous',
+
+          order_index:
+            dto.order_index ?? 1,
         })
         .returning();
 
@@ -53,8 +59,8 @@ export class StepApproversService {
         stepApprovers,
         { desc },
       ) => [
-        desc(stepApprovers.id),
-      ],
+          desc(stepApprovers.id),
+        ],
     });
   }
 

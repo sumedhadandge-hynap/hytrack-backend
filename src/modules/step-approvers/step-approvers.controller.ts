@@ -8,10 +8,10 @@ import {
 } from '@nestjs/common';
 
 import { StepApproversService }
-from './step-approvers.service';
+  from './step-approvers.service';
 
 import { CreateStepApproverDto }
-from './dto/create-step-approver.dto';
+  from './dto/create-step-approver.dto';
 
 @Controller('api/step-approvers')
 export class StepApproversController {
@@ -19,7 +19,7 @@ export class StepApproversController {
   constructor(
     private readonly stepApproversService:
       StepApproversService,
-  ) {}
+  ) { }
 
   @Post()
   async create(
