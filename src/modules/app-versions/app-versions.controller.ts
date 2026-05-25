@@ -12,16 +12,16 @@ import {
 } from '@nestjs/common';
 
 import { JwtAuthGuard }
-from '../auth/guards/jwt-auth.guard';
+  from '../auth/guards/jwt-auth.guard';
 
 import { AppVersionsService }
-from './app-versions.service';
+  from './app-versions.service';
 
 import { CreateAppVersionDto }
-from './dto/create-app-version.dto';
+  from './dto/create-app-version.dto';
 
 import { UpdateAppVersionDto }
-from './dto/update-app-version.dto';
+  from './dto/update-app-version.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/app-versions')
@@ -30,7 +30,7 @@ export class AppVersionsController {
   constructor(
     private readonly appVersionsService:
       AppVersionsService,
-  ) {}
+  ) { }
 
   // CREATE
   @Post()
@@ -73,6 +73,8 @@ export class AppVersionsController {
     };
   }
 
+
+
   // GET BY APP
   @Get('app/:appId')
   async findByApp(
@@ -93,6 +95,30 @@ export class AppVersionsController {
       code: 200,
       message:
         'Versions fetched successfully',
+      result,
+    };
+  }
+
+
+  @Get(':id/full')
+  async getFullVersion(
+    @Param(
+      'id',
+      ParseIntPipe,
+    )
+    id: number,
+  ) {
+
+    const result =
+      await this.appVersionsService.getFullVersion(
+        id,
+      );
+
+    return {
+      status: 'success',
+      code: 200,
+      message:
+        'Version flow fetched successfully',
       result,
     };
   }
@@ -202,4 +228,14 @@ export class AppVersionsController {
         'Version deleted successfully',
     };
   }
+
+
+
+
+
+
+
+
+
+
 }

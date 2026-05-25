@@ -9,7 +9,8 @@ import {
 export class CreateAppStepDto {
 
   @IsNumber()
-  app_id!: number;
+  // app_id!: number;
+  version_id!: number;
 
   @IsString()
   @IsNotEmpty()

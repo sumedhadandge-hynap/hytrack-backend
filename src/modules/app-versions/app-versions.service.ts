@@ -6,21 +6,22 @@ import {
 } from '@nestjs/common';
 
 import { desc, eq }
-from 'drizzle-orm';
+  from 'drizzle-orm';
 
 import type { DbType }
-from 'src/database/database.module';
+  from 'src/database/database.module';
 
 import {
   apps,
+  appSteps,
   appVersions,
 } from 'src/database/schema';
 
 import { CreateAppVersionDto }
-from './dto/create-app-version.dto';
+  from './dto/create-app-version.dto';
 
 import { UpdateAppVersionDto }
-from './dto/update-app-version.dto';
+  from './dto/update-app-version.dto';
 
 @Injectable()
 export class AppVersionsService {
@@ -28,7 +29,7 @@ export class AppVersionsService {
   constructor(
     @Inject('DB')
     private readonly db: DbType,
-  ) {}
+  ) { }
 
   // CREATE VERSION
   async create(
@@ -38,7 +39,11 @@ export class AppVersionsService {
 
     const app =
       await this.db.query.apps.findFirst({
-        where: eq(apps.id, dto.app_id),
+
+        where: eq(
+          apps.id,
+          dto.app_id,
+        ),
       });
 
     if (!app) {
@@ -74,7 +79,6 @@ export class AppVersionsService {
 
     return result;
   }
-
   // GET ALL
   async findAll() {
 
@@ -88,8 +92,8 @@ export class AppVersionsService {
         appVersions,
         { desc },
       ) => [
-        desc(appVersions.id),
-      ],
+          desc(appVersions.id),
+        ],
     });
   }
 
@@ -107,12 +111,14 @@ export class AppVersionsService {
         appVersions,
         { desc },
       ) => [
-        desc(
-          appVersions.version_number,
-        ),
-      ],
+          desc(
+            appVersions.version_number,
+          ),
+        ],
     });
   }
+
+
 
   // GET ONE
   async findOne(id: number) {
@@ -212,4 +218,51 @@ export class AppVersionsService {
 
     return true;
   }
+
+async getFullVersion(id: number) {
+
+  const version =
+    await this.db.query.appVersions.findFirst({
+
+      where: eq(
+        appVersions.id,
+        id,
+      ),
+
+      with: {
+        app: true,
+      },
+    });
+
+  if (!version) {
+
+    throw new NotFoundException(
+      'Version not found',
+    );
+  }
+
+  const steps =
+    await this.db.query.appSteps.findMany({
+
+      where: eq(
+        appSteps.version_id,
+        id,
+      ),
+
+      with: {
+
+        fields: true,
+
+        approvers: true,
+
+        discussions: true,
+      },
+    });
+
+  return {
+    version,
+    steps,
+  };
+}
+
 }

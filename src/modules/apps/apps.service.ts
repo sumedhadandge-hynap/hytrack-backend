@@ -196,34 +196,42 @@ export class AppsService {
 
 
 
-  async getPublishedAppsByType(
+async getPublishedAppsByType(
   typeCode: string,
 ) {
 
-  return await this.db.query.apps.findMany({
+  const items =
+    await this.db.query.apps.findMany({
 
-    where: eq(
-      apps.is_published,
-      true,
-    ),
+      with: {
 
-    with: {
+        appType: true,
 
-      appType: true,
-    },
+        versions: true,
+      },
 
-    orderBy: (apps, { desc }) => [
-      desc(apps.id),
-    ],
-  })
-  .then((items) =>
+      orderBy: (
+        apps,
+        { desc },
+      ) => [
+        desc(apps.id),
+      ],
+    });
 
-    items.filter(
-      (item) =>
-        item.appType?.code ===
-        typeCode,
-    ),
-  );
+  return items.filter((item) => {
+
+    const hasPublishedVersion =
+      item.versions?.some(
+        (version) =>
+          version.is_published === true,
+      );
+
+    return (
+      item.appType?.code ===
+        typeCode &&
+      hasPublishedVersion
+    );
+  });
 }
 
 
