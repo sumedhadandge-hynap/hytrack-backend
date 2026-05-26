@@ -212,4 +212,16 @@ export class AppFieldsService {
 
     return true;
   }
+
+
+
+  async findByStep(stepId: number) {
+  return await this.db.query.appFields.findMany({
+    where: eq(appFields.step_id, stepId),
+
+    orderBy: (appFields, { asc }) => [
+      asc(appFields.order_index),
+    ],
+  });
+}
 }

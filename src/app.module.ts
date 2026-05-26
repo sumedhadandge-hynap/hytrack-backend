@@ -16,6 +16,11 @@ import { AppFieldsModule } from './modules/app-fields/app-fields.module';
 import { StepApproversModule } from './modules/step-approvers/step-approvers.module';
 import { StepDiscussionsModule } from './modules/step-discussions/step-discussions.module';
 import { AppVersionsModule } from './modules/app-versions/app-versions.module';
+import { AppRecordsModule }
+  from './modules/app-records/app-records.module';
+
+import { AppRecordValuesModule }
+  from './modules/app-record-values/app-record-values.module';
 
 
 @Module({
@@ -38,6 +43,8 @@ import { AppVersionsModule } from './modules/app-versions/app-versions.module';
     StepApproversModule,
     StepDiscussionsModule,
     AppVersionsModule,
+    AppRecordsModule,
+    AppRecordValuesModule,
 
   ],
 })

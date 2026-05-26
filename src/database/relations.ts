@@ -10,6 +10,8 @@ import { appFields } from './schema/app-fields.schema';
 import { appVersions } from './schema/app-versions.schema';
 import { stepApprovers } from './schema/step-approvers.schema';
 import { stepDiscussions } from './schema/step-discussions.schema';
+import { appRecords } from './schema/app-records.schema';
+import { appRecordValues } from './schema/app-record-values.schema';
 
 
 
@@ -159,5 +161,24 @@ export const appVersionsRelations =
   }));
 
 
+
+export const appRecordsRelations =
+  relations(appRecords, ({ many }) => ({
+    values: many(appRecordValues),
+  }));
+
+export const appRecordValuesRelations =
+  relations(appRecordValues, ({ one }) => ({
+
+    record: one(appRecords, {
+      fields: [appRecordValues.record_id],
+      references: [appRecords.id],
+    }),
+
+    field: one(appFields, {
+      fields: [appRecordValues.field_id],
+      references: [appFields.id],
+    }),
+  }));
 
 
