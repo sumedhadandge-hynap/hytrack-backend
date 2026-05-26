@@ -137,6 +137,8 @@ export class UsersService {
 
       is_active: user.is_active,
 
+      profile_image_url: user.profile_image_url,
+
       role:
         user.userRoles?.[0]?.role?.name ?? null,
     };
@@ -211,6 +213,9 @@ export class UsersService {
 
             is_active:
               dto.is_active ?? true,
+
+            profile_image_url:
+              dto.profile_image_url ?? null,
 
             created_by:
               userId ?? null,
@@ -306,6 +311,9 @@ export class UsersService {
 
       is_active:
         dto.is_active,
+
+      profile_image_url:
+        dto.profile_image_url,
 
       updated_by:
         userId,

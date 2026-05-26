@@ -12,6 +12,7 @@ import { stepApprovers } from './schema/step-approvers.schema';
 import { stepDiscussions } from './schema/step-discussions.schema';
 import { appRecords } from './schema/app-records.schema';
 import { appRecordValues } from './schema/app-record-values.schema';
+import { permissions, rolePermissions } from './schema';
 
 
 
@@ -182,3 +183,21 @@ export const appRecordValuesRelations =
   }));
 
 
+export const rolePermissionsRelations =
+relations(
+  rolePermissions,
+  ({ one }) => ({
+
+    permission: one(
+      permissions,
+      {
+        fields: [
+          rolePermissions.permission_id,
+        ],
+        references: [
+          permissions.id,
+        ],
+      },
+    ),
+  }),
+);
