@@ -15,6 +15,7 @@ import { AuthService } from './auth.service';
 
 import { JwtStrategy } from './strategies/jwt.strategy';
 
+
 @Module({
 
   imports: [
@@ -53,6 +54,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
   providers: [
     AuthService,
     JwtStrategy,
+   
   ],
 
   exports: [
@@ -61,4 +63,4 @@ import { JwtStrategy } from './strategies/jwt.strategy';
   ],
 })
 
-export class AuthModule {}
+export class AuthModule { }

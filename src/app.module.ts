@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
-
+import { ServeStaticModule }
+  from '@nestjs/serve-static';
 import { LoggerModule } from './common/logger/logger.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
@@ -18,15 +19,30 @@ import { StepDiscussionsModule } from './modules/step-discussions/step-discussio
 import { AppVersionsModule } from './modules/app-versions/app-versions.module';
 import { AppRecordsModule }
   from './modules/app-records/app-records.module';
-
+import { join } from 'path';
 import { AppRecordValuesModule }
   from './modules/app-record-values/app-record-values.module';
+import { UploadModule } from './common/upload/upload.module';
+import { CompanyProfileModule } from './modules/company-profile/company-profile.module';
 
 
 @Module({
+  // imports: [
+  //   ConfigModule.forRoot({
+  //     isGlobal: true,
+  //   }),
+
+
+
   imports: [
+
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'),
+      serveRoot: '/',
     }),
     DatabaseModule,
     LoggerModule,
@@ -45,6 +61,8 @@ import { AppRecordValuesModule }
     AppVersionsModule,
     AppRecordsModule,
     AppRecordValuesModule,
+    UploadModule,
+    CompanyProfileModule,
 
   ],
 })
