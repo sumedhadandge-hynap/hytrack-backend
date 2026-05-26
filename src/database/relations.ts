@@ -8,6 +8,9 @@ import { appTypes } from './schema/app-types.schema';
 import { appSteps } from './schema/app-steps.schema';
 import { appFields } from './schema/app-fields.schema';
 import { appVersions } from './schema/app-versions.schema';
+import { stepApprovers } from './schema/step-approvers.schema';
+import { stepDiscussions } from './schema/step-discussions.schema';
+
 
 
 
@@ -93,11 +96,39 @@ export const appsRelations =
 // =====================================
 
 export const appStepsRelations =
-  relations(appSteps, ({ one }) => ({
+  relations(appSteps, ({ one, many }) => ({
 
-    app: one(apps, {
-      fields: [appSteps.app_id],
-      references: [apps.id],
+    version: one(appVersions, {
+      fields: [appSteps.version_id],
+      references: [appVersions.id],
+    }),
+
+    fields: many(appFields),
+
+    approvers: many(stepApprovers),
+
+    discussions: many(stepDiscussions),
+  }));
+
+
+
+export const stepApproversRelations =
+  relations(stepApprovers, ({ one }) => ({
+
+    step: one(appSteps, {
+      fields: [stepApprovers.step_id],
+      references: [appSteps.id],
+    }),
+  }));
+
+
+
+export const stepDiscussionsRelations =
+  relations(stepDiscussions, ({ one }) => ({
+
+    step: one(appSteps, {
+      fields: [stepDiscussions.step_id],
+      references: [appSteps.id],
     }),
   }));
 
@@ -106,11 +137,6 @@ export const appStepsRelations =
 export const appFieldsRelations =
   relations(appFields, ({ one }) => ({
 
-    app: one(apps, {
-      fields: [appFields.app_id],
-      references: [apps.id],
-    }),
-
     step: one(appSteps, {
       fields: [appFields.step_id],
       references: [appSteps.id],
@@ -118,17 +144,20 @@ export const appFieldsRelations =
   }));
 
 
-
 // =====================================
 // APP VERSIONS RELATIONS
 // =====================================
 export const appVersionsRelations =
-  relations(appVersions, ({ one }) => ({
+  relations(appVersions, ({ one, many }) => ({
 
     app: one(apps, {
       fields: [appVersions.app_id],
       references: [apps.id],
     }),
+
+    steps: many(appSteps),
   }));
+
+
 
 

@@ -10,6 +10,8 @@ import {
 } from 'drizzle-orm/pg-core';
 
 import { apps } from './apps.schema';
+import { appVersions }
+  from './app-versions.schema';
 
 export const appSteps = pgTable('app_steps', {
 
@@ -22,13 +24,13 @@ export const appSteps = pgTable('app_steps', {
     .notNull()
     .unique(),
 
-  app_id: bigint('app_id', {
-    mode: 'number',
-  })
-    .notNull()
-    .references(() => apps.id, {
-      onDelete: 'cascade',
-    }),
+  // app_id: bigint('app_id', {
+  //   mode: 'number',
+  // })
+  //   .notNull()
+  //   .references(() => apps.id, {
+  //     onDelete: 'cascade',
+  //   }),
 
   name: varchar('name', {
     length: 255,
@@ -45,6 +47,15 @@ export const appSteps = pgTable('app_steps', {
 
   is_required: boolean('is_required')
     .default(true),
+
+
+  version_id: bigint('version_id', {
+    mode: 'number',
+  })
+    .notNull()
+    .references(() => appVersions.id, {
+      onDelete: 'cascade',
+    }),
 
   created_by: bigint('created_by', {
     mode: 'number',

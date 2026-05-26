@@ -70,25 +70,23 @@ export class AppStepsController {
   }
 
   // GET APP STEPS
-  @Get('app/:appId')
-  async findByApp(
-    @Param('appId', ParseIntPipe)
-    appId: number,
-  ) {
+@Get('version/:versionId')
+async findByVersion(
+  @Param('versionId', ParseIntPipe)
+  versionId: number,
+) {
+  const result =
+    await this.appStepsService.findByVersion(
+      versionId,
+    );
 
-    const result =
-      await this.appStepsService.findByApp(
-        appId,
-      );
-
-    return {
-      status: 'success',
-      code: 200,
-      message:
-        'App steps fetched successfully',
-      result,
-    };
-  }
+  return {
+    status: 'success',
+    code: 200,
+    message: 'Version steps fetched successfully',
+    result,
+  };
+}
 
   // GET STEP
   @Get(':id')

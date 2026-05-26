@@ -1,50 +1,43 @@
 import {
-  BadRequestException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 
-import { desc, eq }
-from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
-import type { DbType }
-from 'src/database/database.module';
+import type { DbType } from 'src/database/database.module';
 
 import {
-  apps,
   appSteps,
+  appVersions,
 } from 'src/database/schema';
 
-import { CreateAppStepDto }
-from './dto/create-app-step.dto';
-
-import { UpdateAppStepDto }
-from './dto/update-app-step.dto';
+import { CreateAppStepDto } from './dto/create-app-step.dto';
+import { UpdateAppStepDto } from './dto/update-app-step.dto';
 
 @Injectable()
 export class AppStepsService {
-
   constructor(
     @Inject('DB')
     private readonly db: DbType,
   ) {}
 
-  // CREATE STEP
   async create(
     dto: CreateAppStepDto,
     userId?: number,
   ) {
-
-    const app =
-      await this.db.query.apps.findFirst({
-        where: eq(apps.id, dto.app_id),
+    const version =
+      await this.db.query.appVersions.findFirst({
+        where: eq(
+          appVersions.id,
+          dto.version_id,
+        ),
       });
 
-    if (!app) {
-
+    if (!version) {
       throw new NotFoundException(
-        'App not found',
+        'Version not found',
       );
     }
 
@@ -52,24 +45,13 @@ export class AppStepsService {
       await this.db
         .insert(appSteps)
         .values({
-
-          app_id: dto.app_id,
-
+          version_id: dto.version_id,
           name: dto.name,
-
-          description:
-            dto.description ?? null,
-
+          description: dto.description ?? null,
           step_type: dto.step_type,
-
-          order_index:
-            dto.order_index ?? 1,
-
-          is_required:
-            dto.is_required ?? true,
-
+          order_index: dto.order_index ?? 1,
+          is_required: dto.is_required ?? true,
           created_by: userId,
-
           updated_by: userId,
         })
         .returning();
@@ -77,49 +59,42 @@ export class AppStepsService {
     return step;
   }
 
-  // GET ALL STEPS
   async findAll() {
-
     return await this.db.query.appSteps.findMany({
-
       with: {
-        app: true,
+        version: true,
       },
-
       orderBy: (appSteps, { asc }) => [
         asc(appSteps.order_index),
       ],
     });
   }
 
-  // GET APP STEPS
-  async findByApp(appId: number) {
-
+  async findByVersion(versionId: number) {
     return await this.db.query.appSteps.findMany({
-
-      where: eq(appSteps.app_id, appId),
-
+      where: eq(
+        appSteps.version_id,
+        versionId,
+      ),
       orderBy: (appSteps, { asc }) => [
         asc(appSteps.order_index),
       ],
     });
   }
 
-  // GET STEP
   async findOne(id: number) {
-
     const step =
       await this.db.query.appSteps.findFirst({
-
         where: eq(appSteps.id, id),
-
         with: {
-          app: true,
+          version: true,
+          fields: true,
+          approvers: true,
+          discussions: true,
         },
       });
 
     if (!step) {
-
       throw new NotFoundException(
         'Step not found',
       );
@@ -128,24 +103,19 @@ export class AppStepsService {
     return step;
   }
 
-  // UPDATE STEP
   async update(
     id: number,
     dto: UpdateAppStepDto,
     userId?: number,
   ) {
-
     await this.findOne(id);
 
     const [step] =
       await this.db
         .update(appSteps)
         .set({
-
           ...dto,
-
           updated_by: userId,
-
           updated_at: new Date(),
         })
         .where(eq(appSteps.id, id))
@@ -154,9 +124,7 @@ export class AppStepsService {
     return step;
   }
 
-  // DELETE STEP
   async remove(id: number) {
-
     await this.findOne(id);
 
     await this.db

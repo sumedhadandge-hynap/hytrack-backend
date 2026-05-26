@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 
 import { desc, eq }
-from 'drizzle-orm';
+  from 'drizzle-orm';
 
 import type { DbType }
-from 'src/database/database.module';
+  from 'src/database/database.module';
 
 import {
   appFields,
@@ -18,10 +18,10 @@ import {
 } from 'src/database/schema';
 
 import { CreateAppFieldDto }
-from './dto/create-app-field.dto';
+  from './dto/create-app-field.dto';
 
 import { UpdateAppFieldDto }
-from './dto/update-app-field.dto';
+  from './dto/update-app-field.dto';
 
 @Injectable()
 export class AppFieldsService {
@@ -29,7 +29,7 @@ export class AppFieldsService {
   constructor(
     @Inject('DB')
     private readonly db: DbType,
-  ) {}
+  ) { }
 
   // CREATE
   async create(
@@ -133,8 +133,8 @@ export class AppFieldsService {
     return await this.db.query.appFields.findMany({
 
       with: {
-        app: true,
-        step: true,
+        step: true
+       
       },
 
       orderBy: (appFields, { desc }) => [

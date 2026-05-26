@@ -1,6 +1,6 @@
 {
-  "id": "94e9aca3-6217-4bff-bf07-0cb2ff1c7d9c",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "07cb8a60-b412-47d7-b835-3c7b891288a8",
+  "prevId": "5288b84b-40fe-45c9-849d-bd73b71058fc",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -1536,12 +1536,6 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "app_id": {
-          "name": "app_id",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": true
-        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -1574,6 +1568,12 @@
           "notNull": false,
           "default": true
         },
+        "version_id": {
+          "name": "version_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
         "created_by": {
           "name": "created_by",
           "type": "bigint",
@@ -1603,12 +1603,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "app_steps_app_id_apps_id_fk": {
-          "name": "app_steps_app_id_apps_id_fk",
+        "app_steps_version_id_app_versions_id_fk": {
+          "name": "app_steps_version_id_app_versions_id_fk",
           "tableFrom": "app_steps",
-          "tableTo": "apps",
+          "tableTo": "app_versions",
           "columnsFrom": [
-            "app_id"
+            "version_id"
           ],
           "columnsTo": [
             "id"

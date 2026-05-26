@@ -1,4 +1,4 @@
- import {
+import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -10,12 +10,11 @@ export class CreateAppVersionDto {
   @IsNumber()
   app_id!: number;
 
-  @IsNumber()
   @IsOptional()
+  @IsNumber()
   version_number?: number;
 
   @IsString()
-  @IsNotEmpty()
   version_name!: string;
 
   @IsOptional()
