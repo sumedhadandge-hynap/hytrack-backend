@@ -12,16 +12,16 @@ import {
 } from '@nestjs/common';
 
 import { JwtAuthGuard }
-from '../auth/guards/jwt-auth.guard';
+  from '../auth/guards/jwt-auth.guard';
 
 import { AppFieldsService }
-from './app-fields.service';
+  from './app-fields.service';
 
 import { CreateAppFieldDto }
-from './dto/create-app-field.dto';
+  from './dto/create-app-field.dto';
 
 import { UpdateAppFieldDto }
-from './dto/update-app-field.dto';
+  from './dto/update-app-field.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/app-fields')
@@ -29,7 +29,7 @@ export class AppFieldsController {
 
   constructor(
     private readonly appFieldsService: AppFieldsService,
-  ) {}
+  ) { }
 
   // CREATE
   @Post()
@@ -86,6 +86,24 @@ export class AppFieldsController {
       code: 200,
       message:
         'App fields fetched successfully',
+      result,
+    };
+  }
+
+  @Get('step/:stepId')
+  async findByStep(
+    @Param('stepId', ParseIntPipe)
+    stepId: number,
+  ) {
+    const result =
+      await this.appFieldsService.findByStep(
+        stepId,
+      );
+
+    return {
+      status: 'success',
+      code: 200,
+      message: 'Step fields fetched successfully',
       result,
     };
   }
