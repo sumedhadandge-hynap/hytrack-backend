@@ -24,6 +24,7 @@ import { AppRecordValuesModule }
   from './modules/app-record-values/app-record-values.module';
 import { UploadModule } from './common/upload/upload.module';
 import { CompanyProfileModule } from './modules/company-profile/company-profile.module';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 
 @Module({
@@ -63,6 +64,7 @@ import { CompanyProfileModule } from './modules/company-profile/company-profile.
     AppRecordValuesModule,
     UploadModule,
     CompanyProfileModule,
+    ProjectsModule,
 
   ],
 })

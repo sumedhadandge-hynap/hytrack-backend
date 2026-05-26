@@ -43,6 +43,13 @@
       "when": 1779714305103,
       "tag": "0005_absurd_rafael_vega",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1779799812140,
+      "tag": "0006_cloudy_thundra",
+      "breakpoints": true
     }
   ]
 }
