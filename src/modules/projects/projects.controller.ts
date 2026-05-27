@@ -23,6 +23,16 @@ from './dto/create-project.dto';
 import { UpdateProjectDto }
 from './dto/update-project.dto';
 
+
+
+import { CreateFullProjectDto }
+from './dto/create-full-project.dto';
+
+import { UpdateFullProjectDto }
+from './dto/update-full-project.dto';
+
+
+
 @UseGuards(JwtAuthGuard)
 @Controller('api/projects')
 export class ProjectsController {
@@ -62,7 +72,22 @@ export class ProjectsController {
       result,
     };
   }
+@Get(':id/full')
+async findFull(
+  @Param('id', ParseIntPipe)
+  id: number,
+) {
+  const result =
+    await this.projectsService.findFull(id);
 
+  return {
+    status: 'success',
+    code: 200,
+    message:
+      'Project fetched successfully',
+    result,
+  };
+}
   @Get(':id')
   async findOne(
     @Param('id', ParseIntPipe)
@@ -114,4 +139,58 @@ export class ProjectsController {
       message: 'Project deleted successfully',
     };
   }
+
+
+
+  @Post('full')
+async createFull(
+  @Body()
+  dto: CreateFullProjectDto,
+
+  @Req()
+  req: any,
+) {
+  const result =
+    await this.projectsService.createFull(
+      dto,
+      req.user?.id,
+    );
+
+  return {
+    status: 'success',
+    code: 201,
+    message:
+      'Project created successfully',
+    result,
+  };
+}
+
+
+
+@Put(':id/full')
+async updateFull(
+  @Param('id', ParseIntPipe)
+  id: number,
+
+  @Body()
+  dto: UpdateFullProjectDto,
+
+  @Req()
+  req: any,
+) {
+  const result =
+    await this.projectsService.updateFull(
+      id,
+      dto,
+      req.user?.id,
+    );
+
+  return {
+    status: 'success',
+    code: 200,
+    message:
+      'Project updated successfully',
+    result,
+  };
+}
 }

@@ -1,19 +1,27 @@
 import {
   pgTable,
   integer,
+  uuid,
   bigint,
-  jsonb,
+  varchar,
   timestamp,
+  unique,
 } from 'drizzle-orm/pg-core';
 
 import { projects } from './projects.schema';
-import { projectFields } from './project-fields.schema';
+import { users } from './users.schema';
 
-export const projectRecordValues =
-  pgTable('project_record_values', {
+export const projectMembers = pgTable(
+  'project_members',
+  {
     id: integer('id')
       .primaryKey()
       .generatedAlwaysAsIdentity(),
+
+    uid: uuid('uid')
+      .defaultRandom()
+      .notNull()
+      .unique(),
 
     project_id: bigint('project_id', {
       mode: 'number',
@@ -23,19 +31,28 @@ export const projectRecordValues =
         onDelete: 'cascade',
       }),
 
-    field_id: bigint('field_id', {
+    user_id: bigint('user_id', {
       mode: 'number',
     })
       .notNull()
-      .references(() => projectFields.id, {
+      .references(() => users.id, {
         onDelete: 'cascade',
       }),
 
-    value: jsonb('value'),
+    role_name: varchar('role_name', {
+      length: 100,
+    }).default('Member'),
 
     created_at: timestamp('created_at')
       .defaultNow(),
 
     updated_at: timestamp('updated_at')
       .defaultNow(),
-  });
+  },
+  (table) => ({
+    uniqueProjectUser: unique().on(
+      table.project_id,
+      table.user_id,
+    ),
+  }),
+);

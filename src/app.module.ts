@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
-import { ServeStaticModule }
-  from '@nestjs/serve-static';
+import { ServeStaticModule }  from '@nestjs/serve-static';
 import { LoggerModule } from './common/logger/logger.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
@@ -17,14 +16,16 @@ import { AppFieldsModule } from './modules/app-fields/app-fields.module';
 import { StepApproversModule } from './modules/step-approvers/step-approvers.module';
 import { StepDiscussionsModule } from './modules/step-discussions/step-discussions.module';
 import { AppVersionsModule } from './modules/app-versions/app-versions.module';
-import { AppRecordsModule }
-  from './modules/app-records/app-records.module';
+import { AppRecordsModule }   from './modules/app-records/app-records.module';
 import { join } from 'path';
-import { AppRecordValuesModule }
-  from './modules/app-record-values/app-record-values.module';
+import { AppRecordValuesModule }  from './modules/app-record-values/app-record-values.module';
 import { UploadModule } from './common/upload/upload.module';
 import { CompanyProfileModule } from './modules/company-profile/company-profile.module';
 import { ProjectsModule } from './modules/projects/projects.module';
+import { ProjectFieldsModule }  from './modules/project-fields/project-fields.module';
+import { ProjectRecordValuesModule }  from './modules/project-record-values/project-record-values.module';
+import { ProjectMembersModule }  from './modules/project-members/project-members.module';
+import { ProjectAppsModule }  from './modules/project-apps/project-apps.module';
 
 
 @Module({
@@ -65,6 +66,10 @@ import { ProjectsModule } from './modules/projects/projects.module';
     UploadModule,
     CompanyProfileModule,
     ProjectsModule,
+    ProjectFieldsModule,
+    ProjectRecordValuesModule,
+    ProjectMembersModule,
+    ProjectAppsModule,
 
   ],
 })

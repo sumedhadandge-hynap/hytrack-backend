@@ -23,3 +23,5 @@ export * from './app-versions.schema';
 export * from './projects.schema';
 export * from './project-fields.schema';
 export * from './project-record-values.schema';
+export * from './project-members.schema';
+export * from './project-apps.schema';

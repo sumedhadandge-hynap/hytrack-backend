@@ -13,7 +13,11 @@ import { stepDiscussions } from './schema/step-discussions.schema';
 import { appRecords } from './schema/app-records.schema';
 import { appRecordValues } from './schema/app-record-values.schema';
 import { permissions, rolePermissions } from './schema';
-
+import { projectFields } from './schema/project-fields.schema';
+import { projectRecordValues } from './schema/project-record-values.schema';
+import { projectMembers } from './schema/project-members.schema';
+import { projectApps } from './schema/project-apps.schema';
+import { projects } from './schema/projects.schema';
 
 
 
@@ -201,3 +205,64 @@ relations(
     ),
   }),
 );
+
+
+
+export const projectFieldsRelations =
+  relations(projectFields, ({ one, many }) => ({
+    project: one(projects, {
+      fields: [projectFields.project_id],
+      references: [projects.id],
+    }),
+
+    referenceApp: one(apps, {
+      fields: [projectFields.reference_app_id],
+      references: [apps.id],
+    }),
+
+    values: many(projectRecordValues),
+  }));
+
+export const projectRecordValuesRelations =
+  relations(projectRecordValues, ({ one }) => ({
+    project: one(projects, {
+      fields: [projectRecordValues.project_id],
+      references: [projects.id],
+    }),
+
+    field: one(projectFields, {
+      fields: [projectRecordValues.field_id],
+      references: [projectFields.id],
+    }),
+  }));
+
+export const projectMembersRelations =
+  relations(projectMembers, ({ one }) => ({
+    project: one(projects, {
+      fields: [projectMembers.project_id],
+      references: [projects.id],
+    }),
+
+    user: one(users, {
+      fields: [projectMembers.user_id],
+      references: [users.id],
+    }),
+  }));
+
+export const projectAppsRelations =
+  relations(projectApps, ({ one }) => ({
+    project: one(projects, {
+      fields: [projectApps.project_id],
+      references: [projects.id],
+    }),
+
+    app: one(apps, {
+      fields: [projectApps.app_id],
+      references: [apps.id],
+    }),
+
+    version: one(appVersions, {
+      fields: [projectApps.version_id],
+      references: [appVersions.id],
+    }),
+  }));
