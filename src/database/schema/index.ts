@@ -20,3 +20,6 @@ export * from './step-discussions.schema';
 export * from './app-records.schema';
 export * from './app-record-values.schema';
 export * from './app-versions.schema';
+export * from './projects.schema';
+export * from './project-fields.schema';
+export * from './project-record-values.schema';
