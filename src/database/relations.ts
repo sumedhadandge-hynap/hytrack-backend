@@ -12,12 +12,15 @@ import { stepApprovers } from './schema/step-approvers.schema';
 import { stepDiscussions } from './schema/step-discussions.schema';
 import { appRecords } from './schema/app-records.schema';
 import { appRecordValues } from './schema/app-record-values.schema';
-import { permissions, rolePermissions } from './schema';
+import { permissions } from './schema/permission.schema';
+import { rolePermissions } from './schema/role-permissions.schema';
 import { projectFields } from './schema/project-fields.schema';
 import { projectRecordValues } from './schema/project-record-values.schema';
 import { projectMembers } from './schema/project-members.schema';
 import { projectApps } from './schema/project-apps.schema';
 import { projects } from './schema/projects.schema';
+import { companies } from './schema/companies.schema';
+import { countries, states, cities } from './schema/master.schema';
 
 
 
@@ -266,3 +269,28 @@ export const projectAppsRelations =
       references: [appVersions.id],
     }),
   }));
+
+export const projectsRelations = relations(
+  projects,
+  ({ one, many }) => ({
+    company: one(companies, {
+      fields: [projects.company_id],
+      references: [companies.id],
+    }),
+    country: one(countries, {
+      fields: [projects.country_id],
+      references: [countries.id],
+    }),
+    state: one(states, {
+      fields: [projects.state_id],
+      references: [states.id],
+    }),
+    city: one(cities, {
+      fields: [projects.city_id],
+      references: [cities.id],
+    }),
+    fields: many(projectFields),
+    members: many(projectMembers),
+    apps: many(projectApps),
+  })
+);
