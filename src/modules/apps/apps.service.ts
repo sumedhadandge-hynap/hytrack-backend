@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 
 import { desc, eq }
-from 'drizzle-orm';
+  from 'drizzle-orm';
 
 import type { DbType }
-from 'src/database/database.module';
+  from 'src/database/database.module';
 
 import {
   apps,
@@ -17,10 +17,10 @@ import {
 } from 'src/database/schema';
 
 import { CreateAppDto }
-from './dto/create-app.dto';
+  from './dto/create-app.dto';
 
 import { UpdateAppDto }
-from './dto/update-app.dto';
+  from './dto/update-app.dto';
 
 @Injectable()
 export class AppsService {
@@ -28,7 +28,7 @@ export class AppsService {
   constructor(
     @Inject('DB')
     private readonly db: DbType,
-  ) {}
+  ) { }
 
   // CREATE APP
   async create(
@@ -93,15 +93,29 @@ export class AppsService {
   // GET ALL APPS
   async findAll() {
 
-    return await this.db.query.apps.findMany({
+    const items =
+      await this.db.query.apps.findMany({
 
-      with: {
-        appType: true,
-      },
+        with: {
+          appType: true,
+          versions: true,
+        },
+      });
 
-      orderBy: (apps, { desc }) => [
-        desc(apps.id),
-      ],
+    return items.map((app) => {
+
+      const publishedVersion =
+        app.versions.find(
+          (v) => v.is_published,
+        );
+
+      return {
+        id: app.id,
+        name: app.name,
+        code: app.code,
+        appType: app.appType,
+        publishedVersion,
+      };
     });
   }
 
@@ -196,53 +210,57 @@ export class AppsService {
 
 
 
-async getPublishedAppsByType(
-  typeCode: string,
-) {
+  async getPublishedAppsByType(
+    typeCode: string,
+  ) {
 
-  const items =
-    await this.db.query.apps.findMany({
+    const items =
+      await this.db.query.apps.findMany({
 
-      with: {
+        with: {
 
-        appType: true,
+          appType: true,
 
-        versions: true,
-      },
+          versions: true,
+        },
 
-      orderBy: (
-        apps,
-        { desc },
-      ) => [
-        desc(apps.id),
-      ],
-    });
+        orderBy: (
+          apps,
+          { desc },
+        ) => [
+            desc(apps.id),
+          ],
+      });
 
-  return items.filter((item) => {
+    return items
+      .filter((item) => {
 
-    const hasPublishedVersion =
-      item.versions?.some(
-        (version) =>
-          version.is_published === true,
-      );
+        const publishedVersion =
+          item.versions?.find(
+            (v) =>
+              v.is_published === true,
+          );
 
-    return (
-      item.appType?.code ===
-        typeCode &&
-      hasPublishedVersion
-    );
-  });
-}
+        return (
+          item.appType?.code ===
+          typeCode &&
+          publishedVersion
+        );
+      })
+      .map((item) => {
 
+        const publishedVersion =
+          item.versions.find(
+            (v) =>
+              v.is_published === true,
+          );
 
-
-
-
-
-
-
-
-
-
+        return {
+          ...item,
+          published_version:
+            publishedVersion,
+        };
+      });
+  }
 
 }

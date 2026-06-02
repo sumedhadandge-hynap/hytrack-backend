@@ -12,16 +12,16 @@ import {
 } from '@nestjs/common';
 
 import { AppsService }
-from './apps.service';
+  from './apps.service';
 
 import { JwtAuthGuard }
-from '../auth/guards/jwt-auth.guard';
+  from '../auth/guards/jwt-auth.guard';
 
 import { CreateAppDto }
-from './dto/create-app.dto';
+  from './dto/create-app.dto';
 
 import { UpdateAppDto }
-from './dto/update-app.dto';
+  from './dto/update-app.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/apps')
@@ -29,7 +29,7 @@ export class AppsController {
 
   constructor(
     private readonly appsService: AppsService,
-  ) {}
+  ) { }
 
   // CREATE APP
   @Post()
@@ -161,41 +161,41 @@ export class AppsController {
 
 
 
-@Get('published/master')
-async getPublishedMasterApps() {
+  @Get('published/master')
+  async getPublishedMasterApps() {
 
-  const result =
-    await this.appsService
-      .getPublishedAppsByType(
-        'master',
-      );
+    const result =
+      await this.appsService
+        .getPublishedAppsByType(
+          'master',
+        );
 
-  return {
-    status: 'success',
-    code: 200,
-    message:
-      'Published master apps fetched successfully',
-    result,
-  };
-}
+    return {
+      status: 'success',
+      code: 200,
+      message:
+        'Published master apps fetched successfully',
+      result,
+    };
+  }
 
-@Get('published/standard')
-async getPublishedStandardApps() {
+  @Get('published/standard')
+  async getPublishedStandardApps() {
 
-  const result =
-    await this.appsService
-      .getPublishedAppsByType(
-        'standard',
-      );
+    const result =
+      await this.appsService
+        .getPublishedAppsByType(
+          'standard',
+        );
 
-  return {
-    status: 'success',
-    code: 200,
-    message:
-      'Published standard apps fetched successfully',
-    result,
-  };
-}
+    return {
+      status: 'success',
+      code: 200,
+      message:
+        'Published standard apps fetched successfully',
+      result,
+    };
+  }
 
 
 

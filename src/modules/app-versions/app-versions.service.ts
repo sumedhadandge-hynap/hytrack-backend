@@ -182,27 +182,88 @@ export class AppVersionsService {
     userId?: number,
   ) {
 
-    await this.findOne(id);
+    const version =
+      await this.findOne(id);
 
-    const [result] =
+    if (!version) {
+      throw new NotFoundException(
+        'Version not found',
+      );
+    }
+
+    const app =
+      await this.db.query.apps.findFirst({
+        where: eq(
+          apps.id,
+          version.app_id,
+        ),
+      });
+
+    if (!app) {
+      throw new NotFoundException(
+        'App not found',
+      );
+    }
+
+    // mark version published
+    await this.db
+      .update(appVersions)
+      .set({
+        is_published: true,
+        updated_by: userId ?? null,
+        updated_at: new Date(),
+      })
+      .where(eq(appVersions.id, id));
+
+    // create published app copy
+    const publishedCode =
+      `${app.code}_v${version.version_number}`;
+
+    const existing =
+      await this.db.query.apps.findFirst({
+        where: eq(
+          apps.code,
+          publishedCode,
+        ),
+      });
+
+    if (!existing) {
+
       await this.db
-        .update(appVersions)
-        .set({
+        .insert(apps)
+        .values({
+
+          name:
+            `${app.name} ${version.version_name}`,
+
+          code:
+            publishedCode,
+
+          description:
+            app.description,
+
+          app_type_id:
+            app.app_type_id,
+
+          icon_url:
+            app.icon_url,
 
           is_published: true,
 
+          version:
+            version.version_number,
+
+          created_by:
+            userId,
+
           updated_by:
-            userId ?? null,
+            userId,
+        });
+    }
 
-          updated_at:
-            new Date(),
-        })
-        .where(
-          eq(appVersions.id, id),
-        )
-        .returning();
-
-    return result;
+    return {
+      success: true,
+    };
   }
 
   // DELETE
@@ -219,50 +280,50 @@ export class AppVersionsService {
     return true;
   }
 
-async getFullVersion(id: number) {
+  async getFullVersion(id: number) {
 
-  const version =
-    await this.db.query.appVersions.findFirst({
+    const version =
+      await this.db.query.appVersions.findFirst({
 
-      where: eq(
-        appVersions.id,
-        id,
-      ),
+        where: eq(
+          appVersions.id,
+          id,
+        ),
 
-      with: {
-        app: true,
-      },
-    });
+        with: {
+          app: true,
+        },
+      });
 
-  if (!version) {
+    if (!version) {
 
-    throw new NotFoundException(
-      'Version not found',
-    );
+      throw new NotFoundException(
+        'Version not found',
+      );
+    }
+
+    const steps =
+      await this.db.query.appSteps.findMany({
+
+        where: eq(
+          appSteps.version_id,
+          id,
+        ),
+
+        with: {
+
+          fields: true,
+
+          approvers: true,
+
+          discussions: true,
+        },
+      });
+
+    return {
+      version,
+      steps,
+    };
   }
-
-  const steps =
-    await this.db.query.appSteps.findMany({
-
-      where: eq(
-        appSteps.version_id,
-        id,
-      ),
-
-      with: {
-
-        fields: true,
-
-        approvers: true,
-
-        discussions: true,
-      },
-    });
-
-  return {
-    version,
-    steps,
-  };
-}
 
 }

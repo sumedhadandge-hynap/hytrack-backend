@@ -21,6 +21,9 @@ import { projectApps } from './schema/project-apps.schema';
 import { projects } from './schema/projects.schema';
 import { companies } from './schema/companies.schema';
 import { countries, states, cities } from './schema/master.schema';
+import { projectAppRecords } from './schema/project_app_records';
+import { projectAppRecordValues } from './schema/project_app_record_values';
+import { projectAppApprovals } from './schema/project_app_approvals';
 
 
 
@@ -191,23 +194,23 @@ export const appRecordValuesRelations =
 
 
 export const rolePermissionsRelations =
-relations(
-  rolePermissions,
-  ({ one }) => ({
+  relations(
+    rolePermissions,
+    ({ one }) => ({
 
-    permission: one(
-      permissions,
-      {
-        fields: [
-          rolePermissions.permission_id,
-        ],
-        references: [
-          permissions.id,
-        ],
-      },
-    ),
-  }),
-);
+      permission: one(
+        permissions,
+        {
+          fields: [
+            rolePermissions.permission_id,
+          ],
+          references: [
+            permissions.id,
+          ],
+        },
+      ),
+    }),
+  );
 
 
 
@@ -294,3 +297,63 @@ export const projectsRelations = relations(
     apps: many(projectApps),
   })
 );
+
+
+
+
+export const projectAppRecordsRelations =
+  relations(
+    projectAppRecords,
+    ({ many }) => ({
+
+      values: many(
+        projectAppRecordValues,
+      ),
+
+      approvals: many(
+        projectAppApprovals,
+      ),
+    }),
+  );
+
+
+
+export const projectAppRecordValuesRelations =
+  relations(
+    projectAppRecordValues,
+    ({ one }) => ({
+
+      record: one(
+        projectAppRecords,
+        {
+          fields: [
+            projectAppRecordValues.record_id,
+          ],
+          references: [
+            projectAppRecords.id,
+          ],
+        },
+      ),
+    }),
+  );
+
+
+
+export const projectAppApprovalsRelations =
+  relations(
+    projectAppApprovals,
+    ({ one }) => ({
+
+      record: one(
+        projectAppRecords,
+        {
+          fields: [
+            projectAppApprovals.record_id,
+          ],
+          references: [
+            projectAppRecords.id,
+          ],
+        },
+      ),
+    }),
+  );
