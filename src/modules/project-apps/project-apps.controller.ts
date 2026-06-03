@@ -27,6 +27,25 @@ export class ProjectAppsController {
       ProjectAppsService,
   ) {}
 
+  @Post()
+  async installRoot(
+    @Body() dto: InstallProjectAppDto,
+    @Req() req: any,
+  ) {
+    const result =
+      await this.projectAppsService.install(
+        dto,
+        req.user?.id,
+      );
+
+    return {
+      status: 'success',
+      code: 201,
+      message: 'App installed successfully',
+      result,
+    };
+  }
+
   @Post('install')
   async install(
     @Body() dto: InstallProjectAppDto,
@@ -59,6 +78,22 @@ export class ProjectAppsController {
       status: 'success',
       code: 200,
       message: 'Project apps fetched successfully',
+      result,
+    };
+  }
+
+  @Get(':id/steps')
+  async findSteps(
+    @Param('id', ParseIntPipe)
+    id: number,
+  ) {
+    const result =
+      await this.projectAppsService.findSteps(id);
+
+    return {
+      status: 'success',
+      code: 200,
+      message: 'Workflow steps fetched successfully',
       result,
     };
   }

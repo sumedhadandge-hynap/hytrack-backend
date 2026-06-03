@@ -12,6 +12,7 @@ from 'src/database/database.module';
 import {
   companies,
   projects,
+  projectApps,
 } from 'src/database/schema';
 
 import { CreateProjectDto }
@@ -444,4 +445,14 @@ async updateFull(
 
   return await this.findFull(id);
 }
+
+  async findApps(projectId: number) {
+    return await this.db.query.projectApps.findMany({
+      where: eq(projectApps.project_id, projectId),
+      with: {
+        app: true,
+        version: true,
+      },
+    });
+  }
 }

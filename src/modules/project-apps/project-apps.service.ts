@@ -15,6 +15,7 @@ import {
   appVersions,
   projectApps,
   projects,
+  appSteps,
 } from 'src/database/schema';
 
 import { InstallProjectAppDto }
@@ -50,6 +51,25 @@ export class ProjectAppsService {
     }
 
     let versionId = dto.version_id ?? null;
+
+    if (versionId) {
+      const version =
+        await this.db.query.appVersions.findFirst({
+          where: eq(appVersions.id, versionId),
+        });
+
+      if (!version) {
+        throw new NotFoundException(
+          'Version not found',
+        );
+      }
+
+      if (version.app_id !== dto.app_id) {
+        throw new BadRequestException(
+          'Version does not belong to the selected app',
+        );
+      }
+    }
 
     if (!versionId) {
       const publishedVersions =
@@ -113,6 +133,31 @@ export class ProjectAppsService {
         app: true,
         version: true,
       },
+    });
+  }
+
+  async findSteps(id: number) {
+    const projectApp =
+      await this.db.query.projectApps.findFirst({
+        where: eq(projectApps.id, id),
+      });
+
+    if (!projectApp) {
+      throw new NotFoundException('Project app not found');
+    }
+
+    if (!projectApp.version_id) {
+      throw new BadRequestException('No version selected for this installed app');
+    }
+
+    return await this.db.query.appSteps.findMany({
+      where: eq(appSteps.version_id, projectApp.version_id),
+      with: {
+        fields: true,
+      },
+      orderBy: (appSteps, { asc }) => [
+        asc(appSteps.order_index),
+      ],
     });
   }
 

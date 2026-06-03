@@ -11,9 +11,10 @@ import { projectAppRecords } from 'src/database/schema/project_app_records';
 import { CreateProjectAppRecordDto } from './dto/create-project-app-record.dto';
 import { SaveProjectAppRecordDto } from './dto/save-project-app-record.dto';
 import { projectAppRecordValues } from 'src/database/schema/project_app_record_values';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { ApproveProjectAppDto } from './dto/approve-project-app.dto';
 import { projectAppApprovals } from 'src/database/schema/project_app_approvals';
+import { projectApps } from 'src/database/schema/project-apps.schema';
 
 
 
@@ -30,16 +31,43 @@ export class ProjectAppRecordsService {
         dto: CreateProjectAppRecordDto,
         userId?: number,
     ) {
-        const [record] =
-            await this.db
+        let projectId = dto.project_id;
+        if (!projectId) {
+            const projectApp = await this.db.query.projectApps.findFirst({
+                where: eq(projectApps.id, dto.project_app_id),
+            });
+            if (!projectApp) {
+                throw new NotFoundException('Project app not found');
+            }
+            projectId = projectApp.project_id;
+        }
+
+        let record = await this.db.query.projectAppRecords.findFirst({
+            where: and(
+                eq(projectAppRecords.project_app_id, dto.project_app_id),
+                eq(projectAppRecords.status, 'draft'),
+            ),
+        });
+
+        if (!record) {
+            const [newRecord] = await this.db
                 .insert(projectAppRecords)
                 .values({
-                    project_id: dto.project_id,
+                    project_id: projectId,
                     project_app_id: dto.project_app_id,
                     status: 'draft',
                     started_by: userId,
                 })
                 .returning();
+            record = newRecord;
+        }
+
+        if (dto.values && dto.values.length > 0) {
+            await this.saveValues({
+                record_id: record.id,
+                values: dto.values,
+            });
+        }
 
         return record;
     }

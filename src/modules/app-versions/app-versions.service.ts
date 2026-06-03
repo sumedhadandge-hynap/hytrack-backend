@@ -205,65 +205,18 @@ export class AppVersionsService {
       );
     }
 
-    // mark version published
-    await this.db
-      .update(appVersions)
-      .set({
-        is_published: true,
-        updated_by: userId ?? null,
-        updated_at: new Date(),
-      })
-      .where(eq(appVersions.id, id));
-
-    // create published app copy
-    const publishedCode =
-      `${app.code}_v${version.version_number}`;
-
-    const existing =
-      await this.db.query.apps.findFirst({
-        where: eq(
-          apps.code,
-          publishedCode,
-        ),
-      });
-
-    if (!existing) {
-
+    const [updatedVersion] =
       await this.db
-        .insert(apps)
-        .values({
-
-          name:
-            `${app.name} ${version.version_name}`,
-
-          code:
-            publishedCode,
-
-          description:
-            app.description,
-
-          app_type_id:
-            app.app_type_id,
-
-          icon_url:
-            app.icon_url,
-
+        .update(appVersions)
+        .set({
           is_published: true,
+          updated_by: userId ?? null,
+          updated_at: new Date(),
+        })
+        .where(eq(appVersions.id, id))
+        .returning();
 
-          version:
-            version.version_number,
-
-          created_by:
-            userId,
-
-          updated_by:
-            userId,
-        });
-    }
-
-    return {
-      success: true,
-    };
+    return updatedVersion;
   }
 
   // DELETE

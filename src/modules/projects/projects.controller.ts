@@ -113,6 +113,22 @@ export class ProjectsController {
     };
   }
 
+  @Get(':id/apps')
+  async findApps(
+    @Param('id', ParseIntPipe)
+    id: number,
+  ) {
+    const result =
+      await this.projectsService.findApps(id);
+
+    return {
+      status: 'success',
+      code: 200,
+      message: 'Project apps fetched successfully',
+      result,
+    };
+  }
+
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe)
