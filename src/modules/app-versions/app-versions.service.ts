@@ -15,6 +15,9 @@ import {
   apps,
   appSteps,
   appVersions,
+  appFields,
+  stepApprovers,
+  stepDiscussions,
 } from 'src/database/schema';
 
 import { CreateAppVersionDto }
@@ -39,7 +42,6 @@ export class AppVersionsService {
 
     const app =
       await this.db.query.apps.findFirst({
-
         where: eq(
           apps.id,
           dto.app_id,
@@ -47,35 +49,118 @@ export class AppVersionsService {
       });
 
     if (!app) {
-
       throw new NotFoundException(
         'App not found',
       );
     }
 
+    const latestVersion =
+      await this.db.query.appVersions.findFirst({
+        where: eq(appVersions.app_id, dto.app_id),
+        orderBy: (appVersions, { desc }) => [
+          desc(appVersions.version_number),
+        ],
+      });
+
     const [result] =
       await this.db
         .insert(appVersions)
         .values({
-
           app_id: dto.app_id,
-
           version_number:
             dto.version_number ?? 1,
-
           version_name:
             dto.version_name,
-
           notes:
             dto.notes ?? null,
-
           created_by:
             userId ?? null,
-
           updated_by:
             userId ?? null,
         })
         .returning();
+
+    if (latestVersion) {
+      const oldSteps = await this.db.query.appSteps.findMany({
+        where: eq(appSteps.version_id, latestVersion.id),
+      });
+
+      // Sort by order_index to preserve the step order
+      oldSteps.sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0));
+
+      for (const oldStep of oldSteps) {
+        const [newStep] = await this.db
+          .insert(appSteps)
+          .values({
+            name: oldStep.name,
+            description: oldStep.description,
+            step_type: oldStep.step_type,
+            order_index: oldStep.order_index,
+            is_required: oldStep.is_required,
+            version_id: result.id,
+            created_by: userId ?? null,
+            updated_by: userId ?? null,
+          })
+          .returning();
+
+        const type = String(oldStep.step_type).toLowerCase();
+        if (type === 'form') {
+          const oldFields = await this.db.query.appFields.findMany({
+            where: eq(appFields.step_id, oldStep.id),
+          });
+          for (const oldField of oldFields) {
+            await this.db.insert(appFields).values({
+              app_id: oldField.app_id,
+              step_id: newStep.id,
+              label: oldField.label,
+              field_key: oldField.field_key,
+              field_type: oldField.field_type,
+              placeholder: oldField.placeholder,
+              help_text: oldField.help_text,
+              default_value: oldField.default_value,
+              dropdown_options: oldField.dropdown_options,
+              validation_rules: oldField.validation_rules,
+              is_required: oldField.is_required,
+              is_unique: oldField.is_unique,
+              is_visible: oldField.is_visible,
+              is_editable: oldField.is_editable,
+              order_index: oldField.order_index,
+              created_by: userId ?? null,
+              updated_by: userId ?? null,
+            });
+          }
+        } else if (type === 'approval') {
+          const oldApprovers = await this.db.query.stepApprovers.findMany({
+            where: eq(stepApprovers.step_id, oldStep.id),
+          });
+          for (const oldApprover of oldApprovers) {
+            await this.db.insert(stepApprovers).values({
+              step_id: newStep.id,
+              role_id: oldApprover.role_id,
+              user_id: oldApprover.user_id,
+              approval_type: oldApprover.approval_type,
+              rejection_action: oldApprover.rejection_action,
+              order_index: oldApprover.order_index,
+              created_by: userId ?? null,
+              updated_by: userId ?? null,
+            });
+          }
+        } else if (type === 'discussion') {
+          const oldDiscussions = await this.db.query.stepDiscussions.findMany({
+            where: eq(stepDiscussions.step_id, oldStep.id),
+          });
+          for (const oldDiscussion of oldDiscussions) {
+            await this.db.insert(stepDiscussions).values({
+              step_id: newStep.id,
+              role_id: oldDiscussion.role_id,
+              user_id: oldDiscussion.user_id,
+              created_by: userId ?? null,
+              updated_by: userId ?? null,
+            });
+          }
+        }
+      }
+    }
 
     return result;
   }
@@ -215,6 +300,15 @@ export class AppVersionsService {
         })
         .where(eq(appVersions.id, id))
         .returning();
+
+    await this.db
+      .update(apps)
+      .set({
+        is_published: true,
+        updated_by: userId ?? null,
+        updated_at: new Date(),
+      })
+      .where(eq(apps.id, version.app_id));
 
     return updatedVersion;
   }

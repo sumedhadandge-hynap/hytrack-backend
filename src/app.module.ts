@@ -26,6 +26,7 @@ import { ProjectFieldsModule }  from './modules/project-fields/project-fields.mo
 import { ProjectRecordValuesModule }  from './modules/project-record-values/project-record-values.module';
 import { ProjectMembersModule }  from './modules/project-members/project-members.module';
 import { ProjectAppsModule }  from './modules/project-apps/project-apps.module';
+import { ProjectAppRecordsModule } from './modules/project-app-records/project-app-records.module';
 import { CountriesModule } from './modules/countries/countries.module';
 import { StatesModule } from './modules/states/states.module';
 import { CitiesModule } from './modules/cities/cities.module';
@@ -73,6 +74,7 @@ import { CitiesModule } from './modules/cities/cities.module';
     ProjectRecordValuesModule,
     ProjectMembersModule,
     ProjectAppsModule,
+    ProjectAppRecordsModule,
     CitiesModule,
     StatesModule,
     CountriesModule,

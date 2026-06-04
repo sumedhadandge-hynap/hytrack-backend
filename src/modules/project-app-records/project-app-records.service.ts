@@ -15,6 +15,8 @@ import { eq, and } from 'drizzle-orm';
 import { ApproveProjectAppDto } from './dto/approve-project-app.dto';
 import { projectAppApprovals } from 'src/database/schema/project_app_approvals';
 import { projectApps } from 'src/database/schema/project-apps.schema';
+import { CreateProjectAppRecordValueDto } from './dto/create-project-app-record-value.dto';
+import { ApproveActionDto } from './dto/approve-action.dto';
 
 
 
@@ -219,5 +221,167 @@ export class ProjectAppRecordsService {
         });
     }
 
+    // Save single record value (upsert)
+    async saveSingleValue(dto: CreateProjectAppRecordValueDto) {
+        const existing = await this.db.query.projectAppRecordValues.findFirst({
+            where: and(
+                eq(projectAppRecordValues.record_id, dto.record_id),
+                eq(projectAppRecordValues.field_id, dto.field_id),
+            ),
+        });
 
+        if (existing) {
+            const [updated] = await this.db
+                .update(projectAppRecordValues)
+                .set({
+                    value: dto.value,
+                    updated_at: new Date(),
+                })
+                .where(eq(projectAppRecordValues.id, existing.id))
+                .returning();
+            return updated;
+        } else {
+            const [inserted] = await this.db
+                .insert(projectAppRecordValues)
+                .values({
+                    record_id: dto.record_id,
+                    field_id: dto.field_id,
+                    value: dto.value,
+                })
+                .returning();
+            return inserted;
+        }
+    }
+
+    // Handle Approval Action
+    async handleApproval(
+        dto: ApproveActionDto,
+        userId?: number,
+    ) {
+        const { record_id, action, remarks } = dto;
+
+        const record = await this.db.query.projectAppRecords.findFirst({
+            where: eq(projectAppRecords.id, record_id),
+        });
+
+        if (!record) {
+            throw new NotFoundException('Record not found');
+        }
+
+        // Get the project app to find the steps
+        const projectApp = await this.db.query.projectApps.findFirst({
+            where: eq(projectApps.id, record.project_app_id),
+            with: {
+                version: {
+                    with: {
+                        steps: true,
+                    },
+                },
+            },
+        });
+
+        if (!projectApp || !projectApp.version) {
+            throw new NotFoundException('Project app or app version details not found');
+        }
+
+        const steps = projectApp.version.steps.sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0));
+        const approvalSteps = steps.filter((s) => s.step_type === 'approval');
+
+        let stepId: number;
+        
+        // Find existing approvals for this record
+        const existingApprovals = await this.db.query.projectAppApprovals.findMany({
+            where: eq(projectAppApprovals.record_id, record_id),
+        });
+
+        if (action === 'submit') {
+            // Update record status to submitted
+            await this.db
+                .update(projectAppRecords)
+                .set({
+                    status: 'submitted',
+                    updated_at: new Date(),
+                })
+                .where(eq(projectAppRecords.id, record_id));
+
+            // Also insert approval event for submit
+            if (steps.length > 0) {
+                stepId = steps[0].id;
+                await this.db
+                    .insert(projectAppApprovals)
+                    .values({
+                        record_id,
+                        step_id: stepId,
+                        approved_by: userId,
+                        status: 'submitted',
+                        remarks: remarks ?? 'Submitted',
+                    });
+            }
+
+            return {
+                status: 'submitted',
+                record_id,
+            };
+        }
+
+        // For approve / reject, we find the current pending approval step
+        if (approvalSteps.length > 0) {
+            const approvedStepIds = new Set(
+                existingApprovals
+                    .filter((a) => a.status === 'approved' || a.status === 'approve')
+                    .map((a) => a.step_id),
+            );
+
+            const pendingStep = approvalSteps.find((s) => !approvedStepIds.has(s.id));
+            stepId = pendingStep ? pendingStep.id : approvalSteps[approvalSteps.length - 1].id;
+        } else if (steps.length > 0) {
+            stepId = steps[0].id;
+        } else {
+            throw new NotFoundException('No steps defined for this app');
+        }
+
+        // Insert new approval
+        const [newApproval] = await this.db
+            .insert(projectAppApprovals)
+            .values({
+                record_id,
+                step_id: stepId,
+                approved_by: userId,
+                status: action === 'approve' ? 'approved' : 'rejected',
+                remarks: remarks ?? (action === 'approve' ? 'Approved' : 'Rejected'),
+            })
+            .returning();
+
+        if (action === 'approve') {
+            // If all approval steps are completed, mark record as completed
+            const approvedStepIdsAfter = new Set([
+                ...existingApprovals
+                    .filter((a) => a.status === 'approved' || a.status === 'approve')
+                    .map((a) => a.step_id),
+                stepId,
+            ]);
+
+            const remainingPending = approvalSteps.filter((s) => !approvedStepIdsAfter.has(s.id));
+            if (remainingPending.length === 0) {
+                await this.db
+                    .update(projectAppRecords)
+                    .set({
+                        status: 'completed',
+                        updated_at: new Date(),
+                    })
+                    .where(eq(projectAppRecords.id, record_id));
+            }
+        } else if (action === 'reject') {
+            // Mark record status as rejected
+            await this.db
+                .update(projectAppRecords)
+                .set({
+                    status: 'rejected',
+                    updated_at: new Date(),
+                })
+                .where(eq(projectAppRecords.id, record_id));
+        }
+
+        return newApproval;
+    }
 }

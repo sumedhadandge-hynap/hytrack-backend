@@ -98,7 +98,6 @@ export const appsRelations =
       references: [appTypes.id],
     }),
 
-    steps: many(appSteps),
     versions: many(appVersions),
   }));
 

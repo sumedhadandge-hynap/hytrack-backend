@@ -450,7 +450,11 @@ async updateFull(
     return await this.db.query.projectApps.findMany({
       where: eq(projectApps.project_id, projectId),
       with: {
-        app: true,
+        app: {
+          with: {
+            appType: true,
+          },
+        },
         version: true,
       },
     });

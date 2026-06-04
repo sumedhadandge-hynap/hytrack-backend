@@ -137,6 +137,9 @@ export class AppsService {
       icon_url:
         app.icon_url,
 
+      app_type_id:
+        app.app_type_id,
+
       appType:
         app.appType,
 

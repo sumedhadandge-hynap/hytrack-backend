@@ -6,6 +6,10 @@ import { DatabaseModule }
 
 import { ProjectAppRecordsController }
     from './project-app-records.controller';
+import { ProjectAppRecordValuesController }
+    from './project-app-record-values.controller';
+import { ProjectAppApprovalsController }
+    from './project-app-approvals.controller';
 
 import { ProjectAppRecordsService }
     from './project-app-records.service';
@@ -17,6 +21,8 @@ import { ProjectAppRecordsService }
 
     controllers: [
         ProjectAppRecordsController,
+        ProjectAppRecordValuesController,
+        ProjectAppApprovalsController,
     ],
 
     providers: [

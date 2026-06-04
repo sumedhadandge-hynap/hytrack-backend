@@ -1,4 +1,13 @@
-import { IsNumber, IsOptional, IsArray } from 'class-validator';
+import { IsNumber, IsOptional, IsArray, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class RecordValueDto {
+    @IsNumber()
+    field_id: number;
+
+    @IsOptional()
+    value: any;
+}
 
 export class CreateProjectAppRecordDto {
     @IsNumber()
@@ -14,8 +23,7 @@ export class CreateProjectAppRecordDto {
 
     @IsArray()
     @IsOptional()
-    values?: {
-        field_id: number;
-        value: any;
-    }[];
+    @ValidateNested({ each: true })
+    @Type(() => RecordValueDto)
+    values?: RecordValueDto[];
 }
