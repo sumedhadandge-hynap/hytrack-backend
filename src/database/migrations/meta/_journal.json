@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1779100062344,
-      "tag": "0000_lethal_otto_octavius",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1779101558961,
-      "tag": "0001_black_madame_web",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1779102394010,
-      "tag": "0002_dazzling_gwen_stacy",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1779103593559,
-      "tag": "0003_slow_deadpool",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1779105197253,
-      "tag": "0004_curious_the_hunter",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1779714305103,
-      "tag": "0005_absurd_rafael_vega",
+      "when": 1779771977121,
+      "tag": "0000_tan_sersi",
       "breakpoints": true
     },
     {
