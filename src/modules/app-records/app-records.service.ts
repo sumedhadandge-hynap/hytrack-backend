@@ -51,11 +51,25 @@ export class AppRecordsService {
   }
 
   async findByApp(appId: number) {
-    return await this.db.query.appRecords.findMany({
+    const records = await this.db.query.appRecords.findMany({
       where: eq(appRecords.app_id, appId),
+      with: {
+        values: true,
+      },
       orderBy: (appRecords, { desc }) => [
         desc(appRecords.id),
       ],
+    });
+
+    return records.map((r) => {
+      const displayValue = r.values
+        ?.map((v: any) => v.value)
+        .filter(Boolean)
+        .join(', ') || `Record #${r.id}`;
+      return {
+        ...r,
+        display_value: displayValue,
+      };
     });
   }
 

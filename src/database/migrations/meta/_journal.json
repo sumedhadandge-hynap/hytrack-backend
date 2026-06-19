@@ -50,6 +50,20 @@
       "when": 1779799812140,
       "tag": "0006_cloudy_thundra",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1779870408252,
+      "tag": "0007_aspiring_hammerhead",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1780568055608,
+      "tag": "0008_stiff_tyrannus",
+      "breakpoints": true
     }
   ]
 }

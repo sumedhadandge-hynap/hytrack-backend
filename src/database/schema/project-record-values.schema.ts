@@ -9,19 +9,33 @@ import {
 import { projects } from './projects.schema';
 import { projectFields } from './project-fields.schema';
 
-export const projectRecordValues = pgTable('project_record_values', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+export const projectRecordValues =
+  pgTable('project_record_values', {
+    id: integer('id')
+      .primaryKey()
+      .generatedAlwaysAsIdentity(),
 
-  project_id: bigint('project_id', { mode: 'number' })
-    .notNull()
-    .references(() => projects.id, { onDelete: 'cascade' }),
+    project_id: bigint('project_id', {
+      mode: 'number',
+    })
+      .notNull()
+      .references(() => projects.id, {
+        onDelete: 'cascade',
+      }),
 
-  field_id: bigint('field_id', { mode: 'number' })
-    .notNull()
-    .references(() => projectFields.id, { onDelete: 'cascade' }),
+    field_id: bigint('field_id', {
+      mode: 'number',
+    })
+      .notNull()
+      .references(() => projectFields.id, {
+        onDelete: 'cascade',
+      }),
 
-  value: jsonb('value'),
+    value: jsonb('value'),
 
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
-});
+    created_at: timestamp('created_at')
+      .defaultNow(),
+
+    updated_at: timestamp('updated_at')
+      .defaultNow(),
+  });

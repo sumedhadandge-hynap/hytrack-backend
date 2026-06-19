@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Inject,
   Injectable,
   NotFoundException,
@@ -33,11 +34,24 @@ export class AppStepsService {
           appVersions.id,
           dto.version_id,
         ),
+        with: {
+          app: {
+            with: {
+              appType: true,
+            },
+          },
+        },
       });
 
     if (!version) {
       throw new NotFoundException(
         'Version not found',
+      );
+    }
+
+    if (version?.app?.appType?.code === 'master' && dto.step_type !== 'form') {
+      throw new BadRequestException(
+        'Master Apps can only contain Form steps.',
       );
     }
 
