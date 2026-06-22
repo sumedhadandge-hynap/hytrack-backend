@@ -33,6 +33,10 @@ export class ProjectAppRecordsController {
             ProjectAppRecordsService,
     ) { }
 
+
+
+
+
     // START APP
     @Post()
     async create(
@@ -184,4 +188,39 @@ export class ProjectAppRecordsController {
             result,
         };
     }
+
+
+
+
+
+
+    @Get('project-app/:projectAppId')
+    async findByProjectApp(
+        @Param(
+            'projectAppId',
+            ParseIntPipe,
+        )
+        projectAppId: number,
+    ) {
+
+        const result =
+            await this.projectAppRecordsService
+                .findByProjectApp(
+                    projectAppId,
+                );
+
+        return {
+            status: 'success',
+            code: 200,
+            message:
+                'App records fetched successfully',
+            result,
+        };
+    }
+
+
+
+
+
+
 }

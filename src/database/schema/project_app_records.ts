@@ -26,7 +26,9 @@ export const projectAppRecords =
             mode: 'number',
         })
             .notNull()
-            .references(() => projectApps.id),
+            .references(() => projectApps.id, {
+                onDelete: 'cascade',
+            }),
 
         status: varchar('status', {
             length: 50,
