@@ -28,7 +28,9 @@ export const projectAppRuns = pgTable(
             mode: 'number',
         })
             .notNull()
-            .references(() => projectApps.id),
+            .references(() => projectApps.id, {
+                onDelete: 'cascade',
+            }),
 
         status: varchar('status', {
             length: 50,

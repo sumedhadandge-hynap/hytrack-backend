@@ -288,7 +288,7 @@ export class ProjectAppRecordsService {
         const approvalSteps = steps.filter((s) => s.step_type === 'approval');
 
         let stepId: number;
-        
+
         // Find existing approvals for this record
         const existingApprovals = await this.db.query.projectAppApprovals.findMany({
             where: eq(projectAppApprovals.record_id, record_id),
@@ -384,4 +384,53 @@ export class ProjectAppRecordsService {
 
         return newApproval;
     }
+
+
+
+
+
+
+
+
+
+    async findByProjectApp(
+        projectAppId: number,
+    ) {
+
+        return await this.db
+            .query.projectAppRecords.findMany({
+
+                where: eq(
+                    projectAppRecords.project_app_id,
+                    projectAppId,
+                ),
+
+                with: {
+                    values: true,
+                    approvals: true,
+                },
+
+                orderBy: (
+                    projectAppRecords,
+                    { desc },
+                ) => [
+                        desc(projectAppRecords.id),
+                    ],
+            });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

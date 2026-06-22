@@ -36,6 +36,9 @@ export const projectAppStepValues =
                 .references(
                     () =>
                         projectAppStepRuns.id,
+                    {
+                        onDelete: 'cascade',
+                    },
                 ),
 
             field_id: bigint('field_id', {

@@ -27,6 +27,9 @@ export const projectAppStepRuns = pgTable(
             .notNull()
             .references(
                 () => projectAppRuns.id,
+                {
+                    onDelete: 'cascade',
+                },
             ),
 
         app_step_id: bigint(

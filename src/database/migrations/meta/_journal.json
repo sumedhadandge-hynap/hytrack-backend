@@ -29,6 +29,13 @@
       "when": 1780568055608,
       "tag": "0008_stiff_tyrannus",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1782125729853,
+      "tag": "0009_supreme_valkyrie",
+      "breakpoints": true
     }
   ]
 }
