@@ -26,6 +26,16 @@ export class CreateFullProjectDto {
   @IsString()
   thumbnail_url?: string;
 
+  // NEW FIELD
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  // NEW FIELD
+  @IsOptional()
+  @IsString()
+  google_map_link?: string;
+
   @IsOptional()
   @IsDateString()
   start_date?: string;

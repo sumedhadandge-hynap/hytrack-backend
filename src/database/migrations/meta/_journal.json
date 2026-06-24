@@ -71,6 +71,20 @@
       "when": 1782125729853,
       "tag": "0009_supreme_valkyrie",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1782293540638,
+      "tag": "0010_first_alex_wilder",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1782304455841,
+      "tag": "0011_sudden_sister_grimm",
+      "breakpoints": true
     }
   ]
 }

@@ -52,6 +52,16 @@ export const appFields = pgTable('app_fields', {
     length: 100,
   }).notNull(),
 
+  // For Reference/Master fields
+  reference_app_id: bigint('reference_app_id', {
+    mode: 'number',
+  }).references(() => apps.id),
+
+  // Which field from the master app should be shown
+  reference_display_field_id: bigint('reference_display_field_id', {
+    mode: 'number',
+  }),
+
   placeholder: text('placeholder'),
 
   help_text: text('help_text'),

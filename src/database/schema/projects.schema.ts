@@ -37,6 +37,10 @@ export const projects = pgTable('projects', {
 
   thumbnail_url: text('thumbnail_url'),
 
+  address: text('address'),
+
+  google_map_link: text('google_map_link'),
+
   start_date: timestamp('start_date'),
 
   end_date: timestamp('end_date'),

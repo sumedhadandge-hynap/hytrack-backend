@@ -146,14 +146,32 @@ export const stepDiscussionsRelations =
 
 
 
-export const appFieldsRelations =
-  relations(appFields, ({ one }) => ({
+  export const appFieldsRelations = relations(
+  appFields,
+  ({ one }) => ({
+    app: one(apps, {
+      fields: [appFields.app_id],
+      references: [apps.id],
+    }),
 
     step: one(appSteps, {
       fields: [appFields.step_id],
       references: [appSteps.id],
     }),
-  }));
+
+    referenceApp: one(apps, {
+      fields: [appFields.reference_app_id],
+      references: [apps.id],
+      relationName: 'referenceApp',
+    }),
+
+    referenceDisplayField: one(appFields, {
+      fields: [appFields.reference_display_field_id],
+      references: [appFields.id],
+      relationName: 'referenceDisplayField',
+    }),
+  }),
+);
 
 
 // =====================================
@@ -356,3 +374,6 @@ export const projectAppApprovalsRelations =
       ),
     }),
   );
+
+
+
