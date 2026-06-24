@@ -73,6 +73,35 @@ export class AppFieldsService {
       );
     }
 
+    if (dto.reference_app_id) {
+      const referenceApp =
+        await this.db.query.apps.findFirst({
+          where: eq(apps.id, dto.reference_app_id),
+        });
+
+      if (!referenceApp) {
+        throw new NotFoundException(
+          'Reference app not found',
+        );
+      }
+    }
+
+    if (dto.reference_display_field_id) {
+      const displayField =
+        await this.db.query.appFields.findFirst({
+          where: eq(
+            appFields.id,
+            dto.reference_display_field_id,
+          ),
+        });
+
+      if (!displayField) {
+        throw new NotFoundException(
+          'Reference display field not found',
+        );
+      }
+    }
+
     const [field] =
       await this.db
         .insert(appFields)
@@ -87,6 +116,12 @@ export class AppFieldsService {
           field_key: dto.field_key,
 
           field_type: dto.field_type,
+
+          reference_app_id:
+            dto.reference_app_id ?? null,
+
+          reference_display_field_id:
+            dto.reference_display_field_id ?? null,
 
           placeholder:
             dto.placeholder ?? null,
@@ -133,10 +168,10 @@ export class AppFieldsService {
     return await this.db.query.appFields.findMany({
 
       with: {
-        step: true
-       
+        step: true,
+        referenceApp: true,
+        referenceDisplayField: true,
       },
-
       orderBy: (appFields, { desc }) => [
         desc(appFields.id),
       ],
@@ -147,8 +182,13 @@ export class AppFieldsService {
   async findByApp(appId: number) {
 
     return await this.db.query.appFields.findMany({
-
       where: eq(appFields.app_id, appId),
+
+      with: {
+        step: true,
+        referenceApp: true,
+        referenceDisplayField: true,
+      },
 
       orderBy: (appFields, { asc }) => [
         asc(appFields.order_index),
@@ -160,10 +200,16 @@ export class AppFieldsService {
   async findOne(id: number) {
 
     const field =
-      await this.db.query.appFields.findFirst({
+      await this.db.query.appFields.
+        findFirst({
+          where: eq(appFields.id, id),
 
-        where: eq(appFields.id, id),
-      });
+          with: {
+            step: true,
+            referenceApp: true,
+            referenceDisplayField: true,
+          },
+        });
 
     if (!field) {
 
@@ -189,7 +235,47 @@ export class AppFieldsService {
         .update(appFields)
         .set({
 
-          ...dto,
+          label: dto.label,
+
+          field_key: dto.field_key,
+
+          field_type: dto.field_type,
+
+          reference_app_id:
+            dto.reference_app_id,
+
+          reference_display_field_id:
+            dto.reference_display_field_id,
+
+          placeholder:
+            dto.placeholder,
+
+          help_text:
+            dto.help_text,
+
+          default_value:
+            dto.default_value,
+
+          dropdown_options:
+            dto.dropdown_options,
+
+          validation_rules:
+            dto.validation_rules,
+
+          is_required:
+            dto.is_required,
+
+          is_unique:
+            dto.is_unique,
+
+          is_visible:
+            dto.is_visible,
+
+          is_editable:
+            dto.is_editable,
+
+          order_index:
+            dto.order_index,
 
           updated_by: userId,
 
@@ -216,12 +302,17 @@ export class AppFieldsService {
 
 
   async findByStep(stepId: number) {
-  return await this.db.query.appFields.findMany({
-    where: eq(appFields.step_id, stepId),
+    return await this.db.query.appFields.findMany({
+  where: eq(appFields.step_id, stepId),
 
-    orderBy: (appFields, { asc }) => [
-      asc(appFields.order_index),
-    ],
-  });
-}
+  with: {
+    referenceApp: true,
+    referenceDisplayField: true,
+  },
+
+  orderBy: (appFields, { asc }) => [
+    asc(appFields.order_index),
+  ],
+});
+  }
 }

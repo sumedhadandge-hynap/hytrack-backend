@@ -62,4 +62,12 @@ export class CreateAppFieldDto {
   @IsOptional()
   @IsNumber()
   order_index?: number;
+
+  @IsOptional()
+  @IsNumber()
+  reference_app_id?: number;
+
+  @IsOptional()
+  @IsNumber()
+  reference_display_field_id?: number;
 }

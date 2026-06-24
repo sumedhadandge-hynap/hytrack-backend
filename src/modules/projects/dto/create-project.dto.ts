@@ -5,42 +5,51 @@ import {
     IsString,
 } from 'class-validator';
 
+
 export class CreateProjectDto {
-    @IsNumber()
-    company_id!: number;
+  @IsNumber()
+  company_id!: number;
 
-    @IsString()
-    name!: string;
+  @IsString()
+  name!: string;
 
-    @IsOptional()
-    @IsString()
-    description?: string;
+  @IsOptional()
+  @IsString()
+  description?: string;
 
-    @IsOptional()
-    @IsString()
-    thumbnail_url?: string;
+  @IsOptional()
+  @IsString()
+  thumbnail_url?: string;
 
-    @IsOptional()
-    @IsDateString()
-    start_date?: string;
+  @IsOptional()
+  @IsString()
+  address?: string;
 
-    @IsOptional()
-    @IsDateString()
-    end_date?: string;
+  @IsOptional()
+  @IsString()
+  google_map_link?: string;
 
-    @IsOptional()
-    @IsNumber()
-    country_id?: number;
+  @IsOptional()
+  @IsDateString()
+  start_date?: string;
 
-    @IsOptional()
-    @IsNumber()
-    state_id?: number;
+  @IsOptional()
+  @IsDateString()
+  end_date?: string;
 
-    @IsOptional()
-    @IsNumber()
-    city_id?: number;
+  @IsOptional()
+  @IsNumber()
+  country_id?: number;
 
-    @IsOptional()
-    @IsString()
-    status?: string;
+  @IsOptional()
+  @IsNumber()
+  state_id?: number;
+
+  @IsOptional()
+  @IsNumber()
+  city_id?: number;
+
+  @IsOptional()
+  @IsString()
+  status?: string;
 }
