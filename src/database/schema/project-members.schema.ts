@@ -43,6 +43,14 @@ export const projectMembers = pgTable(
       length: 100,
     }).default('Member'),
 
+    created_by: bigint('created_by', {
+      mode: 'number',
+    }),
+
+    updated_by: bigint('updated_by', {
+      mode: 'number',
+    }),
+
     created_at: timestamp('created_at')
       .defaultNow(),
 

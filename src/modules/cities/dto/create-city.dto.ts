@@ -1,18 +1,24 @@
-// create-city.dto.ts
-
 import {
-  IsNumber,
+  IsInt,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
 export class CreateCityDto {
+  @IsInt()
+  countryId!: number;
+
+  @IsInt()
+  stateId!: number;
 
   @IsString()
   name!: string;
 
-  @IsNumber()
-  country_id!: number;
+  @IsOptional()
+  @IsString()
+  code?: string;
 
-  @IsNumber()
-  state_id!: number;
+  @IsOptional()
+  @IsString()
+  description?: string;
 }

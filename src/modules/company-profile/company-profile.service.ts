@@ -43,18 +43,16 @@ export class CompanyProfileService {
   }
 
   // UPDATE MAIN COMPANY
- async updateProfile(
+async updateProfile(
   dto: UpdateCompanyProfileDto,
   userId?: number,
 ) {
-
   const company =
     await this.db.query.companies.findFirst({
       where: eq(companies.is_main, true),
     });
 
   if (!company) {
-
     throw new NotFoundException(
       'Company not found',
     );
@@ -64,14 +62,9 @@ export class CompanyProfileService {
     await this.db
       .update(companies)
       .set({
-
         ...dto,
-
-        updated_by:
-          userId ?? null,
-
-        updated_at:
-          new Date(),
+        updated_by: userId ?? null,
+        updated_at: new Date(),
       })
       .where(
         eq(
