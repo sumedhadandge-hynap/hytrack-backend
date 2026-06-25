@@ -60,9 +60,6 @@ export class ProjectsController {
     };
   }
 
-
-
-
   @Get()
   async findAll() {
     const result =
@@ -75,9 +72,6 @@ export class ProjectsController {
       result,
     };
   }
-
-
-
 
 
 
@@ -189,7 +183,6 @@ export class ProjectsController {
       result,
     };
   }
-
 
 
   @Put(':id/full')

@@ -1,6 +1,6 @@
 import {
   IsEmail,
-  IsNumber,
+  IsInt,
   IsObject,
   IsOptional,
   IsString,
@@ -8,7 +8,6 @@ import {
 } from 'class-validator';
 
 export class UpdateCompanyProfileDto {
-
   @IsOptional()
   @IsString()
   name?: string;
@@ -46,15 +45,15 @@ export class UpdateCompanyProfileDto {
   favicon_url?: string;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   country_id?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   state_id?: number;
 
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   city_id?: number;
 
   @IsOptional()
@@ -67,5 +66,5 @@ export class UpdateCompanyProfileDto {
 
   @IsOptional()
   @IsObject()
-  custom_fields?: any;
+  custom_fields?: Record<string, any>;
 }

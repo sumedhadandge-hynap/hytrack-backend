@@ -1,20 +1,21 @@
-// create-state.dto.ts
-
 import {
-  IsNumber,
+  IsInt,
   IsOptional,
   IsString,
 } from 'class-validator';
 
 export class CreateStateDto {
+  @IsInt()
+  countryId!: number;
 
   @IsString()
   name!: string;
 
-  @IsNumber()
-  country_id!: number;
+  @IsOptional()
+  @IsString()
+  stateCode?: string;
 
   @IsOptional()
   @IsString()
-  state_code?: string;
+  description?: string;
 }

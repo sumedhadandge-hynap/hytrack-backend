@@ -6,17 +6,18 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 
 import { JwtAuthGuard }
-from '../auth/guards/jwt-auth.guard';
+  from '../auth/guards/jwt-auth.guard';
 
 import { ProjectMembersService }
-from './project-members.service';
+  from './project-members.service';
 
 import { CreateProjectMemberDto }
-from './dto/create-project-member.dto';
+  from './dto/create-project-member.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/project-members')
@@ -24,14 +25,22 @@ export class ProjectMembersController {
   constructor(
     private readonly projectMembersService:
       ProjectMembersService,
-  ) {}
+  ) { }
 
   @Post()
   async add(
-    @Body() dto: CreateProjectMemberDto,
+    @Body()
+    dto: CreateProjectMemberDto,
+
+    @Req()
+    req: any,
   ) {
+
     const result =
-      await this.projectMembersService.add(dto);
+      await this.projectMembersService.add(
+        dto,
+        req.user?.id,
+      );
 
     return {
       status: 'success',

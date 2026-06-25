@@ -37,9 +37,11 @@ export const usersRelations = relations(
   ({ many }) => ({
 
     userRoles: many(userRoles),
+
+    projectMembers: many(projectMembers),
+
   }),
 );
-
 
 // =====================================
 // ROLES RELATIONS
@@ -375,5 +377,39 @@ export const projectAppApprovalsRelations =
     }),
   );
 
+
+  export const countriesRelations = relations(
+  countries,
+  ({ many }) => ({
+    states: many(states),
+  }),
+);
+
+export const statesRelations = relations(
+  states,
+  ({ one, many }) => ({
+    country: one(countries, {
+      fields: [states.countryId],
+      references: [countries.id],
+    }),
+
+    cities: many(cities),
+  }),
+);
+
+export const citiesRelations = relations(
+  cities,
+  ({ one }) => ({
+    state: one(states, {
+      fields: [cities.stateId],
+      references: [states.id],
+    }),
+
+    country: one(countries, {
+      fields: [cities.countryId],
+      references: [countries.id],
+    }),
+  }),
+);
 
 

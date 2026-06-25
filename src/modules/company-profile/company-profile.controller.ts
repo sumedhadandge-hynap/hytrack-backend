@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
   Put,
   Req,
   UseGuards,
@@ -13,8 +14,8 @@ from '../auth/guards/jwt-auth.guard';
 import { CompanyProfileService }
 from './company-profile.service';
 
-import { UpdateCompanyProfileDto }
-from './dto/update-company-profile.dto';
+import { UpdateCompanyProfileDto } from './dto/update-company-profile.dto';
+import { companies } from 'src/database/schema';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/company-profile')
@@ -44,28 +45,26 @@ export class CompanyProfileController {
   }
 
   // UPDATE PROFILE
-  @Put()
-  async updateProfile(
-    @Body()
-    dto: UpdateCompanyProfileDto,
 
-    @Req()
-    req: any,
-  ) {
+@Put()
+async updateProfile(
+  @Body()
+  dto: UpdateCompanyProfileDto,
 
-    const result =
-      await this.companyProfileService
-        .updateProfile(
-          dto,
-          req.user?.id,
-        );
+  @Req()
+  req: any,
+) {
+  const result =
+    await this.companyProfileService.updateProfile(
+      dto,
+      req.user?.id,
+    );
 
-    return {
-      status: 'success',
-      code: 200,
-      message:
-        'Company profile updated successfully',
-      result,
-    };
-  }
+  return {
+    status: 'success',
+    code: 200,
+    message: 'Company profile updated successfully',
+    result,
+  };
+}
 }
