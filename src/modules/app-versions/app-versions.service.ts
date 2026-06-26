@@ -304,7 +304,7 @@ export class AppVersionsService {
     await this.db
       .update(apps)
       .set({
-        is_published: true,
+        // is_published: true,
         updated_by: userId ?? null,
         updated_at: new Date(),
       })

@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { desc, eq , and }
+import { desc, eq, and }
   from 'drizzle-orm';
 
 import type { DbType }
@@ -34,157 +34,157 @@ export class AppFieldsService {
   ) { }
 
   // CREATE
-async create(
-  dto: CreateAppFieldDto,
-  userId?: number,
-) {
-  // Check App
-  const app =
-    await this.db.query.apps.findFirst({
-      where: eq(apps.id, dto.app_id),
-    });
-
-  if (!app) {
-    throw new NotFoundException(
-      'App not found',
-    );
-  }
-
-  // Check Step
-  const step =
-    await this.db.query.appSteps.findFirst({
-      where: eq(
-        appSteps.id,
-        dto.step_id,
-      ),
-    });
-
-  if (!step) {
-    throw new NotFoundException(
-      'Step not found',
-    );
-  }
-
-  // Check duplicate Label in same App + Step
-  const existingLabel =
-    await this.db.query.appFields.findFirst({
-      where: and(
-        eq(appFields.app_id, dto.app_id),
-        eq(appFields.step_id, dto.step_id),
-        eq(appFields.label, dto.label),
-      ),
-    });
-
-  if (existingLabel) {
-    throw new BadRequestException(
-      `A field named "${dto.label}" already exists in this step.`,
-    );
-  }
-
-  // Check duplicate Field Key in same App + Step
-  const existingFieldKey =
-    await this.db.query.appFields.findFirst({
-      where: and(
-        eq(appFields.app_id, dto.app_id),
-        eq(appFields.step_id, dto.step_id),
-        eq(appFields.field_key, dto.field_key),
-      ),
-    });
-
-  if (existingFieldKey) {
-    throw new BadRequestException(
-      'A field with the same key already exists in this step.',
-    );
-  }
-
-  // Validate Reference App
-  if (dto.reference_app_id) {
-    const referenceApp =
+  async create(
+    dto: CreateAppFieldDto,
+    userId?: number,
+  ) {
+    // Check App
+    const app =
       await this.db.query.apps.findFirst({
+        where: eq(apps.id, dto.app_id),
+      });
+
+    if (!app) {
+      throw new NotFoundException(
+        'App not found',
+      );
+    }
+
+    // Check Step
+    const step =
+      await this.db.query.appSteps.findFirst({
         where: eq(
-          apps.id,
-          dto.reference_app_id,
+          appSteps.id,
+          dto.step_id,
         ),
       });
 
-    if (!referenceApp) {
+    if (!step) {
       throw new NotFoundException(
-        'Reference app not found',
+        'Step not found',
       );
     }
-  }
 
-  // Validate Reference Display Field
-  if (dto.reference_display_field_id) {
-    const displayField =
+    // Check duplicate Label in same App + Step
+    const existingLabel =
       await this.db.query.appFields.findFirst({
-        where: eq(
-          appFields.id,
-          dto.reference_display_field_id,
+        where: and(
+          eq(appFields.app_id, dto.app_id),
+          eq(appFields.step_id, dto.step_id),
+          eq(appFields.label, dto.label),
         ),
       });
 
-    if (!displayField) {
-      throw new NotFoundException(
-        'Reference display field not found',
+    if (existingLabel) {
+      throw new BadRequestException(
+        `A field named "${dto.label}" already exists in this step.`,
       );
     }
+
+    // Check duplicate Field Key in same App + Step
+    const existingFieldKey =
+      await this.db.query.appFields.findFirst({
+        where: and(
+          eq(appFields.app_id, dto.app_id),
+          eq(appFields.step_id, dto.step_id),
+          eq(appFields.field_key, dto.field_key),
+        ),
+      });
+
+    if (existingFieldKey) {
+      throw new BadRequestException(
+        'A field with the same key already exists in this step.',
+      );
+    }
+
+    // Validate Reference App
+    if (dto.reference_app_id) {
+      const referenceApp =
+        await this.db.query.apps.findFirst({
+          where: eq(
+            apps.id,
+            dto.reference_app_id,
+          ),
+        });
+
+      if (!referenceApp) {
+        throw new NotFoundException(
+          'Reference app not found',
+        );
+      }
+    }
+
+    // Validate Reference Display Field
+    if (dto.reference_display_field_id) {
+      const displayField =
+        await this.db.query.appFields.findFirst({
+          where: eq(
+            appFields.id,
+            dto.reference_display_field_id,
+          ),
+        });
+
+      if (!displayField) {
+        throw new NotFoundException(
+          'Reference display field not found',
+        );
+      }
+    }
+
+    const [field] =
+      await this.db
+        .insert(appFields)
+        .values({
+          app_id: dto.app_id,
+          step_id: dto.step_id,
+          label: dto.label,
+          field_key: dto.field_key,
+          field_type: dto.field_type,
+
+          reference_app_id:
+            dto.reference_app_id ?? null,
+
+          reference_display_field_id:
+            dto.reference_display_field_id ?? null,
+
+          placeholder:
+            dto.placeholder ?? null,
+
+          help_text:
+            dto.help_text ?? null,
+
+          default_value:
+            dto.default_value ?? null,
+
+          dropdown_options:
+            dto.dropdown_options ?? null,
+
+          validation_rules:
+            dto.validation_rules ?? null,
+
+          is_required:
+            dto.is_required ?? false,
+
+          is_unique:
+            dto.is_unique ?? false,
+
+          is_visible:
+            dto.is_visible ?? true,
+
+          is_editable:
+            dto.is_editable ?? true,
+
+          order_index:
+            dto.order_index ?? 0,
+
+          created_by: userId,
+
+          updated_by: userId,
+        })
+        .returning();
+
+    return field;
   }
-
-  const [field] =
-    await this.db
-      .insert(appFields)
-      .values({
-        app_id: dto.app_id,
-        step_id: dto.step_id,
-        label: dto.label,
-        field_key: dto.field_key,
-        field_type: dto.field_type,
-
-        reference_app_id:
-          dto.reference_app_id ?? null,
-
-        reference_display_field_id:
-          dto.reference_display_field_id ?? null,
-
-        placeholder:
-          dto.placeholder ?? null,
-
-        help_text:
-          dto.help_text ?? null,
-
-        default_value:
-          dto.default_value ?? null,
-
-        dropdown_options:
-          dto.dropdown_options ?? null,
-
-        validation_rules:
-          dto.validation_rules ?? null,
-
-        is_required:
-          dto.is_required ?? false,
-
-        is_unique:
-          dto.is_unique ?? false,
-
-        is_visible:
-          dto.is_visible ?? true,
-
-        is_editable:
-          dto.is_editable ?? true,
-
-        order_index:
-          dto.order_index ?? 0,
-
-        created_by: userId,
-
-        updated_by: userId,
-      })
-      .returning();
-
-  return field;
-}
 
   // GET ALL
   async findAll() {
@@ -216,6 +216,34 @@ async create(
 
       orderBy: (appFields, { asc }) => [
         asc(appFields.order_index),
+      ],
+    });
+  }
+
+    async findByVersion(versionId: number) {
+
+    const steps = await this.db.query.appSteps.findMany({
+      where: eq(appSteps.version_id, versionId),
+    });
+
+    if (!steps.length) {
+      return [];
+    }
+
+    const stepIds = steps.map(step => step.id);
+
+    return await this.db.query.appFields.findMany({
+      where: (field, { inArray }) =>
+        inArray(field.step_id, stepIds),
+
+      with: {
+        step: true,
+        referenceApp: true,
+        referenceDisplayField: true,
+      },
+
+      orderBy: (field, { asc }) => [
+        asc(field.order_index),
       ],
     });
   }
@@ -327,16 +355,16 @@ async create(
 
   async findByStep(stepId: number) {
     return await this.db.query.appFields.findMany({
-  where: eq(appFields.step_id, stepId),
+      where: eq(appFields.step_id, stepId),
 
-  with: {
-    referenceApp: true,
-    referenceDisplayField: true,
-  },
+      with: {
+        referenceApp: true,
+        referenceDisplayField: true,
+      },
 
-  orderBy: (appFields, { asc }) => [
-    asc(appFields.order_index),
-  ],
-});
+      orderBy: (appFields, { asc }) => [
+        asc(appFields.order_index),
+      ],
+    });
   }
 }

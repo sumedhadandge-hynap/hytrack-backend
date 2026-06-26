@@ -1,11 +1,10 @@
 import {
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
 
-export class CreateAppDto {
+export class CreateAppGroupDto {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -17,15 +16,4 @@ export class CreateAppDto {
   @IsOptional()
   @IsString()
   description?: string;
-
-  @IsNumber()
-  app_type_id: number;
-
-  @IsOptional()
-  @IsNumber()
-  app_group_id?: number;
-
-  @IsOptional()
-  @IsString()
-  icon_url?: string;
 }
