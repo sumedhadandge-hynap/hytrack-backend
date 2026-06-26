@@ -5,12 +5,12 @@ import {
 } from 'class-validator';
 
 export class CreateAppRecordDto {
+
   @IsNumber()
   app_id!: number;
 
-  @IsOptional()
   @IsNumber()
-  version_id?: number;
+  version_id!: number;
 
   @IsOptional()
   @IsNumber()
@@ -19,4 +19,5 @@ export class CreateAppRecordDto {
   @IsOptional()
   @IsString()
   status?: string;
+
 }

@@ -8,6 +8,7 @@ import {
 } from 'drizzle-orm/pg-core';
 
 import { apps } from './apps.schema';
+import { appVersions } from './app-versions.schema';
 
 export const appRecords = pgTable('app_records', {
 
@@ -24,6 +25,13 @@ export const appRecords = pgTable('app_records', {
     mode: 'number',
   })
     .references(() => apps.id),
+  version_id: bigint('version_id', {
+  mode: 'number',
+})
+  .notNull()
+  .references(() => appVersions.id, {
+    onDelete: 'cascade',
+  }),
 
   company_id: bigint('company_id', {
     mode: 'number',

@@ -12,6 +12,10 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AppRecordsService } from './app-records.service';
 import { CreateAppRecordDto } from './dto/create-app-record.dto';
+import {
+  Query,
+ 
+} from '@nestjs/common';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/app-records')
@@ -39,21 +43,27 @@ export class AppRecordsController {
     };
   }
 
-  @Get('app/:appId')
-  async findByApp(
-    @Param('appId', ParseIntPipe)
-    appId: number,
-  ) {
-    const result =
-      await this.appRecordsService.findByApp(appId);
+@Get('app/:appId')
+async findByApp(
+  @Param('appId', ParseIntPipe)
+  appId: number,
 
-    return {
-      status: 'success',
-      code: 200,
-      message: 'App records fetched successfully',
-      result,
-    };
-  }
+  @Query('version_id', ParseIntPipe)
+  versionId: number,
+) {
+  const result =
+    await this.appRecordsService.findByApp(
+      appId,
+      versionId,
+    );
+
+  return {
+    status: 'success',
+    code: 200,
+    message: 'App records fetched successfully',
+    result,
+  };
+}
 
   @Get(':id')
   async findOne(

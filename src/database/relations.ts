@@ -192,10 +192,26 @@ export const appVersionsRelations =
 
 
 
-export const appRecordsRelations =
-  relations(appRecords, ({ many }) => ({
+// export const appRecordsRelations =
+//   relations(appRecords, ({ many }) => ({
+//     values: many(appRecordValues),
+//   }));
+export const appRecordsRelations = relations(
+  appRecords,
+  ({ one, many }) => ({
+    app: one(apps, {
+      fields: [appRecords.app_id],
+      references: [apps.id],
+    }),
+
+    version: one(appVersions, {
+      fields: [appRecords.version_id],
+      references: [appVersions.id],
+    }),
+
     values: many(appRecordValues),
-  }));
+  }),
+);
 
 export const appRecordValuesRelations =
   relations(appRecordValues, ({ one }) => ({
