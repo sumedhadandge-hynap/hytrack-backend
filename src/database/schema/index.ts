@@ -1,33 +1,102 @@
-// src/database/schema/index.ts
+/**
+ * ==========================================
+ * Common
+ * ==========================================
+ */
 
-export * from './common.schema';
-export * from './companies.schema';
-export * from './users.schema';
-export * from './roles.schema';
-export * from './user-roles.schema';
-export * from './permission.schema';
-export * from './role-permissions.schema';
-export * from './menus.schema';
-export * from './audit-logs.schema';
-export * from './master.schema';
+export * from './common/common.schema';
+export * from './common/menus.schema';
+
+/**
+ * ==========================================
+ * Authentication
+ * ==========================================
+ */
+
+export * from './auth/users.schema';
+export * from './auth/roles.schema';
+export * from './auth/permission.schema';
+export * from './auth/user-roles.schema';
+export * from './auth/role-permissions.schema';
+
+/**
+ * ==========================================
+ * Company
+ * ==========================================
+ */
+
+export * from './company/companies.schema';
+export * from './company/company-profile.schema';
+export * from './company/company-users.schema';
+
+/**
+ * ==========================================
+ * Projects
+ * ==========================================
+ */
+
+export * from './projects/projects.schema';
+export * from './projects/project-members.schema';
+export * from './projects/project-fields.schema';
+
+/**
+ * ==========================================
+ * Masters
+ * ==========================================
+ */
+
+export * from './masters/master.schema';
+
+/**
+ * ==========================================
+ * Application Builder
+ * ==========================================
+ */
+
+export * from './application-builder/app-groups.schema';
+export * from './application-builder/app-types.schema';
+export * from './application-builder/step-types.schema';
+export * from './application-builder/field-types.schema';
+
+export * from './application-builder/apps.schema';
+export * from './application-builder/app-versions.schema';
+export * from './application-builder/app-steps.schema';
+export * from './application-builder/app-fields.schema';
+
+/**
+ * ==========================================
+ * Runtime
+ * ==========================================
+ */
+
+export * from './runtime/project-apps.schema';
+
+export * from './runtime/app-records.schema';
+export * from './runtime/app-record-values.schema';
+
+export * from './runtime/app-runs.schema';
+export * from './runtime/app-step-runs.schema';
+
+export * from './runtime/app-approvals.schema';
+
+export * from './application-builder/step-approvers.schema';
+export * from './runtime/step-discussions.schema';
+export * from './runtime/step-attachments.schema';
+
+export * from './runtime/app-upgrade-history.schema';
+
+/**
+ * ==========================================
+ * Audit
+ * ==========================================
+ */
+
+export * from './audit/audit-logs.schema';
+
+/**
+ * ==========================================
+ * Relations
+ * ==========================================
+ */
+
 export * from '../relations';
-export * from './app-types.schema';
-export * from './apps.schema';
-export * from './app-steps.schema';
-export * from './app-fields.schema';
-export * from './step-approvers.schema';
-export * from './step-discussions.schema';
-export * from './app-records.schema';
-export * from './app-record-values.schema';
-export * from './app-versions.schema';
-export * from './projects.schema';
-export * from './project-fields.schema';
-export * from './project-record-values.schema';
-export * from './project-members.schema';
-export * from './project-apps.schema';
-export * from './project_app_records';
-export * from './project_app_record_values';
-export * from './project_app_approvals';
-export * from './project_app_runs';
-export * from './project_app_step_runs';
-export * from './project_app_step_values';

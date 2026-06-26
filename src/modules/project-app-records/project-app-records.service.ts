@@ -7,14 +7,14 @@ import {
 
 import type { DbType }
     from 'src/database/database.module';
-import { projectAppRecords } from 'src/database/schema/project_app_records';
+import { projectAppRecords } from 'src/database/schema/runtime/project_app_records';
 import { CreateProjectAppRecordDto } from './dto/create-project-app-record.dto';
 import { SaveProjectAppRecordDto } from './dto/save-project-app-record.dto';
 import { projectAppRecordValues } from 'src/database/schema/project_app_record_values';
 import { eq, and } from 'drizzle-orm';
 import { ApproveProjectAppDto } from './dto/approve-project-app.dto';
 import { projectAppApprovals } from 'src/database/schema/project_app_approvals';
-import { projectApps } from 'src/database/schema/project-apps.schema';
+import { projectApps } from 'src/database/schema/runtime/project-apps.schema';
 import { CreateProjectAppRecordValueDto } from './dto/create-project-app-record-value.dto';
 import { ApproveActionDto } from './dto/approve-action.dto';
 

@@ -1,29 +1,29 @@
 import { relations } from 'drizzle-orm';
 
-import { users } from './schema/users.schema';
-import { roles } from './schema/roles.schema';
-import { userRoles } from './schema/user-roles.schema';
-import { apps } from './schema/apps.schema';
-import { appTypes } from './schema/app-types.schema';
-import { appSteps } from './schema/app-steps.schema';
-import { appFields } from './schema/app-fields.schema';
-import { appVersions } from './schema/app-versions.schema';
-import { stepApprovers } from './schema/step-approvers.schema';
-import { stepDiscussions } from './schema/step-discussions.schema';
-import { appRecords } from './schema/app-records.schema';
-import { appRecordValues } from './schema/app-record-values.schema';
-import { permissions } from './schema/permission.schema';
-import { rolePermissions } from './schema/role-permissions.schema';
-import { projectFields } from './schema/project-fields.schema';
-import { projectRecordValues } from './schema/project-record-values.schema';
-import { projectMembers } from './schema/project-members.schema';
-import { projectApps } from './schema/project-apps.schema';
-import { projects } from './schema/projects.schema';
-import { companies } from './schema/companies.schema';
-import { countries, states, cities } from './schema/master.schema';
-import { projectAppRecords } from './schema/project_app_records';
-import { projectAppRecordValues } from './schema/project_app_record_values';
-import { projectAppApprovals } from './schema/project_app_approvals';
+import { users } from './schema/auth/users.schema';
+import { roles } from './schema/auth/roles.schema';
+import { userRoles } from './schema/auth/user-roles.schema';
+import { apps } from './schema/application-builder/apps.schema';
+import { appTypes } from './schema/application-builder/app-types.schema';
+import { appSteps } from './schema/application-builder/app-steps.schema';
+import { appFields } from './schema/application-builder/app-fields.schema';
+import { appVersions } from './schema/application-builder/app-versions.schema';
+import { stepApprovers } from './schema/application-builder/step-approvers.schema';
+import { stepDiscussions } from './schema/runtime/step-discussions.schema';
+import { appRecords } from './schema/runtime/app-records.schema';
+import { appRecordValues } from './schema/runtime/app-record-values.schema';
+import { permissions } from './schema/auth/permission.schema';
+import { rolePermissions } from './schema/auth/role-permissions.schema';
+import { projectFields } from './schema/projects/project-fields.schema';
+import { projectRecordValues } from './schema/runtime/project-record-values.schema';
+import { projectMembers } from './schema/projects/project-members.schema';
+import { projectApps } from './schema/runtime/project-apps.schema';
+import { projects } from './schema/projects/projects.schema';
+import { companies } from './schema/company/companies.schema';
+import { countries, states, cities } from './schema/masters/master.schema';
+import { projectAppRecords } from './schema/runtime/project_app_records';
+import { projectAppRecordValues } from './schema/runtime/project_app_record_values';
+import { projectAppApprovals } from './schema/runtime/project_app_approvals';
 
 
 
