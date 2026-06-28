@@ -1,9 +1,8 @@
 import {
   pgTable,
   integer,
-  bigint,
-  jsonb,
   timestamp,
+  jsonb,
 } from 'drizzle-orm/pg-core';
 
 import { appRecords } from './app-records.schema';
@@ -12,23 +11,20 @@ import { appFields } from './app-fields.schema';
 export const appRecordValues = pgTable(
   'app_record_values',
   {
-
     id: integer('id')
       .primaryKey()
       .generatedAlwaysAsIdentity(),
 
-    record_id: bigint('record_id', {
-      mode: 'number',
-    })
+    record_id: integer('record_id')
+      .notNull()
       .references(() => appRecords.id, {
         onDelete: 'cascade',
       }),
 
-    field_id: bigint('field_id', {
-      mode: 'number',
-    })
+    field_id: integer('field_id')
+      .notNull()
       .references(() => appFields.id, {
-        onDelete: 'cascade',
+        onDelete: 'restrict',
       }),
 
     value: jsonb('value'),

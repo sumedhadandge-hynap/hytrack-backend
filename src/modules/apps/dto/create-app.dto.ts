@@ -22,10 +22,6 @@ export class CreateAppDto {
   app_type_id: number;
 
   @IsOptional()
-  @IsNumber()
-  app_group_id?: number;
-
-  @IsOptional()
   @IsString()
   icon_url?: string;
 }

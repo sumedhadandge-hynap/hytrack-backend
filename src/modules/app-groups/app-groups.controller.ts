@@ -6,18 +6,14 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
 
-
-
-import { AppGroupsService } from './app-groups.service';
-
-import { CreateAppGroupDto } from './dto/create-app-group.dto';
-import { UpdateAppGroupDto } from './dto/update-app-group.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { AppGroupsService } from './app-groups.service';
+import { CreateAppGroupDto } from './dto/create-app-group.dto';
+import { AddAppsToGroupDto } from './dto/add-apps-to-group.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/app-groups')
@@ -31,15 +27,16 @@ export class AppGroupsController {
     @Body() dto: CreateAppGroupDto,
     @Req() req: any,
   ) {
-    const result = await this.appGroupsService.create(
-      dto,
-      req.user?.id,
-    );
+    const result =
+      await this.appGroupsService.create(
+        dto,
+        req.user?.id,
+      );
 
     return {
       status: 'success',
       code: 201,
-      message: 'App group created successfully.',
+      message: 'App group created successfully',
       result,
     };
   }
@@ -52,15 +49,14 @@ export class AppGroupsController {
     return {
       status: 'success',
       code: 200,
-      message: 'App groups fetched successfully.',
+      message: 'App groups fetched successfully',
       result,
     };
   }
 
   @Get(':id')
   async findOne(
-    @Param('id', ParseIntPipe)
-    id: number,
+    @Param('id', ParseIntPipe) id: number,
   ) {
     const result =
       await this.appGroupsService.findOne(id);
@@ -68,24 +64,19 @@ export class AppGroupsController {
     return {
       status: 'success',
       code: 200,
-      message: 'App group fetched successfully.',
+      message: 'App group fetched successfully',
       result,
     };
   }
 
-  @Put(':id')
-  async update(
-    @Param('id', ParseIntPipe)
-    id: number,
-
-    @Body()
-    dto: UpdateAppGroupDto,
-
-    @Req()
-    req: any,
+  @Post(':id/apps')
+  async addAppsToGroup(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: AddAppsToGroupDto,
+    @Req() req: any,
   ) {
     const result =
-      await this.appGroupsService.update(
+      await this.appGroupsService.addAppsToGroup(
         id,
         dto,
         req.user?.id,
@@ -93,38 +84,42 @@ export class AppGroupsController {
 
     return {
       status: 'success',
-      code: 200,
-      message: 'App group updated successfully.',
+      code: 201,
+      message: 'Apps added to group successfully',
       result,
     };
   }
 
-  @Delete(':id')
-  async remove(
-    @Param('id', ParseIntPipe)
-    id: number,
+  @Get(':id/apps')
+  async getGroupApps(
+    @Param('id', ParseIntPipe) id: number,
   ) {
-    await this.appGroupsService.remove(id);
+    const result =
+      await this.appGroupsService.getGroupApps(id);
 
     return {
       status: 'success',
       code: 200,
-      message: 'App group deleted successfully.',
+      message: 'App group apps fetched successfully',
+      result,
     };
   }
 
-  @Get(':id/apps')
-  async getApps(
-    @Param('id', ParseIntPipe)
-    id: number,
+  @Delete(':id/apps/:appId')
+  async removeAppFromGroup(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('appId', ParseIntPipe) appId: number,
   ) {
     const result =
-      await this.appGroupsService.getApps(id);
+      await this.appGroupsService.removeAppFromGroup(
+        id,
+        appId,
+      );
 
     return {
       status: 'success',
       code: 200,
-      message: 'Apps fetched successfully.',
+      message: 'App removed from group successfully',
       result,
     };
   }

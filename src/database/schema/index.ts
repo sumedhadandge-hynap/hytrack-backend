@@ -32,3 +32,5 @@ export * from './project_app_runs';
 export * from './project_app_step_runs';
 export * from './project_app_step_values';
 export * from './app-groups.schema';
+export * from './app-group-apps.schema';
+export * from './app-installations.schema';

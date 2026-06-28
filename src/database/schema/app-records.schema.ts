@@ -11,7 +11,6 @@ import { apps } from './apps.schema';
 import { appVersions } from './app-versions.schema';
 
 export const appRecords = pgTable('app_records', {
-
   id: integer('id')
     .primaryKey()
     .generatedAlwaysAsIdentity(),
@@ -21,17 +20,17 @@ export const appRecords = pgTable('app_records', {
     .notNull()
     .unique(),
 
-  app_id: bigint('app_id', {
-    mode: 'number',
-  })
-    .references(() => apps.id),
-  version_id: bigint('version_id', {
-  mode: 'number',
-})
-  .notNull()
-  .references(() => appVersions.id, {
-    onDelete: 'cascade',
-  }),
+  app_id: integer('app_id')
+    .notNull()
+    .references(() => apps.id, {
+      onDelete: 'restrict',
+    }),
+
+  version_id: integer('version_id')
+    .notNull()
+    .references(() => appVersions.id, {
+      onDelete: 'restrict',
+    }),
 
   company_id: bigint('company_id', {
     mode: 'number',

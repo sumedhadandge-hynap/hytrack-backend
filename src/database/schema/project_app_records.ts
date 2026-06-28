@@ -1,46 +1,54 @@
 import {
-    pgTable,
-    integer,
-    bigint,
-    timestamp,
-    varchar,
+  bigint,
+  integer,
+  pgTable,
+  timestamp,
+  varchar,
 } from 'drizzle-orm/pg-core';
 
 import { projects } from './projects.schema';
 import { projectApps } from './project-apps.schema';
+import { appVersions } from './app-versions.schema';
 
 export const projectAppRecords =
-    pgTable('project_app_records', {
+  pgTable('project_app_records', {
+    id: integer('id')
+      .primaryKey()
+      .generatedAlwaysAsIdentity(),
 
-        id: integer('id')
-            .primaryKey()
-            .generatedAlwaysAsIdentity(),
+    project_id: bigint('project_id', {
+      mode: 'number',
+    })
+      .notNull()
+      .references(() => projects.id),
 
-        project_id: bigint('project_id', {
-            mode: 'number',
-        })
-            .notNull()
-            .references(() => projects.id),
+    project_app_id: bigint('project_app_id', {
+      mode: 'number',
+    })
+      .notNull()
+      .references(() => projectApps.id, {
+        onDelete: 'cascade',
+      }),
 
-        project_app_id: bigint('project_app_id', {
-            mode: 'number',
-        })
-            .notNull()
-            .references(() => projectApps.id, {
-                onDelete: 'cascade',
-            }),
+    version_id: bigint('version_id', {
+      mode: 'number',
+    })
+      .notNull()
+      .references(() => appVersions.id, {
+        onDelete: 'restrict',
+      }),
 
-        status: varchar('status', {
-            length: 50,
-        }).default('draft'),
+    status: varchar('status', {
+      length: 50,
+    }).default('draft'),
 
-        started_by: bigint('started_by', {
-            mode: 'number',
-        }),
+    started_by: bigint('started_by', {
+      mode: 'number',
+    }),
 
-        created_at: timestamp('created_at')
-            .defaultNow(),
+    created_at: timestamp('created_at')
+      .defaultNow(),
 
-        updated_at: timestamp('updated_at')
-            .defaultNow(),
-    });
+    updated_at: timestamp('updated_at')
+      .defaultNow(),
+  });

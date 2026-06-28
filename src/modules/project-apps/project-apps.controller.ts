@@ -10,41 +10,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { JwtAuthGuard }
-from '../auth/guards/jwt-auth.guard';
-
-import { ProjectAppsService }
-from './project-apps.service';
-
-import { InstallProjectAppDto }
-from './dto/install-project-app.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ProjectAppsService } from './project-apps.service';
+import { InstallProjectAppDto } from './dto/install-project-app.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/project-apps')
 export class ProjectAppsController {
   constructor(
-    private readonly projectAppsService:
-      ProjectAppsService,
+    private readonly projectAppsService: ProjectAppsService,
   ) {}
-
-  @Post()
-  async installRoot(
-    @Body() dto: InstallProjectAppDto,
-    @Req() req: any,
-  ) {
-    const result =
-      await this.projectAppsService.install(
-        dto,
-        req.user?.id,
-      );
-
-    return {
-      status: 'success',
-      code: 201,
-      message: 'App installed successfully',
-      result,
-    };
-  }
 
   @Post('install')
   async install(
@@ -65,14 +40,35 @@ export class ProjectAppsController {
     };
   }
 
+  @Post(':id/update-latest')
+  async updateLatest(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() req: any,
+  ) {
+    const result =
+      await this.projectAppsService.updateLatest(
+        id,
+        req.user?.id,
+      );
+
+    return {
+      status: 'success',
+      code: 200,
+      message:
+        'Project app updated to latest version successfully',
+      result,
+    };
+  }
+
   @Get('project/:projectId')
   async findByProject(
     @Param('projectId', ParseIntPipe)
     projectId: number,
   ) {
     const result =
-      await this.projectAppsService
-        .findByProject(projectId);
+      await this.projectAppsService.findByProject(
+        projectId,
+      );
 
     return {
       status: 'success',
@@ -93,7 +89,8 @@ export class ProjectAppsController {
     return {
       status: 'success',
       code: 200,
-      message: 'Workflow steps fetched successfully',
+      message:
+        'Workflow steps fetched successfully',
       result,
     };
   }
