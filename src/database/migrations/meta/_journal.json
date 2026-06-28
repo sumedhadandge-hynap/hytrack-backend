@@ -64,6 +64,55 @@
       "when": 1782392509340,
       "tag": "0013_whole_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1782419941434,
+      "tag": "0014_flippant_lily_hollister",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1782469777450,
+      "tag": "0015_dry_skin",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1782495880749,
+      "tag": "0016_condemned_captain_universe",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1782496213263,
+      "tag": "0017_vengeful_ghost_rider",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1782497840284,
+      "tag": "0018_polite_blue_blade",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1782586217654,
+      "tag": "0019_striped_mister_fear",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1782656779796,
+      "tag": "0020_flimsy_clint_barton",
+      "breakpoints": true
     }
   ]
 }

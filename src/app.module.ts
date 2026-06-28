@@ -30,6 +30,8 @@ import { ProjectAppRecordsModule } from './modules/project-app-records/project-a
 import { CountriesModule } from './modules/countries/countries.module';
 import { StatesModule } from './modules/states/states.module';
 import { CitiesModule } from './modules/cities/cities.module';
+import { AppGroupsModule } from './modules/app-groups/app-groups.module';
+import { AppInstallationsModule } from './modules/app-installations/app-installations.module';
 
 
 @Module({
@@ -78,6 +80,8 @@ import { CitiesModule } from './modules/cities/cities.module';
     CitiesModule,
     StatesModule,
     CountriesModule,
+    AppGroupsModule,
+    AppInstallationsModule,
 
   ],
 })

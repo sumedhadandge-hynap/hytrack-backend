@@ -89,6 +89,24 @@ export class AppFieldsController {
       result,
     };
   }
+  // GET BY VERSION
+@Get('version/:versionId')
+async findByVersion(
+  @Param('versionId', ParseIntPipe)
+  versionId: number,
+) {
+  const result =
+    await this.appFieldsService.findByVersion(
+      versionId,
+    );
+
+  return {
+    status: 'success',
+    code: 200,
+    message: 'Version fields fetched successfully',
+    result,
+  };
+}
 
   @Get('step/:stepId')
   async findByStep(

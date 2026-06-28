@@ -1,15 +1,18 @@
+
+
 import {
     pgTable,
     integer,
     uuid,
     varchar,
     text,
-    timestamp,
     bigint,
+    timestamp,
     boolean,
 } from 'drizzle-orm/pg-core';
 
-import { appTypes } from './app-types.schema.js';
+import { appTypes } from './app-types.schema';
+import { appGroups } from './app-groups.schema';
 
 export const apps = pgTable('apps', {
     id: integer('id')
@@ -27,7 +30,9 @@ export const apps = pgTable('apps', {
 
     code: varchar('code', {
         length: 255,
-    }).notNull().unique(),
+    })
+        .notNull()
+        .unique(),
 
     description: text('description'),
 
@@ -39,13 +44,17 @@ export const apps = pgTable('apps', {
             onDelete: 'cascade',
         }),
 
+    app_group_id: bigint('app_group_id', {
+        mode: 'number',
+    }).references(() => appGroups.id, {
+        onDelete: 'set null',
+    }),
+
     icon_url: text('icon_url'),
 
-    is_published: boolean('is_published')
-        .default(false),
-
-    version: integer('version')
-        .default(1),
+    is_active: boolean('is_active')
+        .default(true)
+        .notNull(),
 
     created_by: bigint('created_by', {
         mode: 'number',
@@ -56,8 +65,10 @@ export const apps = pgTable('apps', {
     }),
 
     created_at: timestamp('created_at')
-        .defaultNow(),
+        .defaultNow()
+        .notNull(),
 
     updated_at: timestamp('updated_at')
-        .defaultNow(),
+        .defaultNow()
+        .notNull(),
 });

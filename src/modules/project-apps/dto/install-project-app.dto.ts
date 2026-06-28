@@ -1,7 +1,4 @@
-import {
-  IsNumber,
-  IsOptional,
-} from 'class-validator';
+import { IsNumber } from 'class-validator';
 
 export class InstallProjectAppDto {
   @IsNumber()
@@ -9,8 +6,4 @@ export class InstallProjectAppDto {
 
   @IsNumber()
   app_id!: number;
-
-  @IsOptional()
-  @IsNumber()
-  version_id?: number;
 }

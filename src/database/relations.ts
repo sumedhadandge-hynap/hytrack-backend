@@ -24,6 +24,7 @@ import { countries, states, cities } from './schema/master.schema';
 import { projectAppRecords } from './schema/project_app_records';
 import { projectAppRecordValues } from './schema/project_app_record_values';
 import { projectAppApprovals } from './schema/project_app_approvals';
+import { appGroups } from './schema/app-groups.schema';
 
 
 
@@ -92,17 +93,22 @@ export const appTypesRelations =
 // APPS RELATIONS
 // =====================================
 
-export const appsRelations =
-  relations(apps, ({ one, many }) => ({
-
+export const appsRelations = relations(
+  apps,
+  ({ one, many }) => ({
     appType: one(appTypes, {
       fields: [apps.app_type_id],
       references: [appTypes.id],
     }),
 
-    versions: many(appVersions),
-  }));
+    appGroup: one(appGroups, {
+      fields: [apps.app_group_id],
+      references: [appGroups.id],
+    }),
 
+    versions: many(appVersions),
+  }),
+);
 
 
 // =====================================
@@ -192,10 +198,26 @@ export const appVersionsRelations =
 
 
 
-export const appRecordsRelations =
-  relations(appRecords, ({ many }) => ({
+// export const appRecordsRelations =
+//   relations(appRecords, ({ many }) => ({
+//     values: many(appRecordValues),
+//   }));
+export const appRecordsRelations = relations(
+  appRecords,
+  ({ one, many }) => ({
+    app: one(apps, {
+      fields: [appRecords.app_id],
+      references: [apps.id],
+    }),
+
+    version: one(appVersions, {
+      fields: [appRecords.version_id],
+      references: [appVersions.id],
+    }),
+
     values: many(appRecordValues),
-  }));
+  }),
+);
 
 export const appRecordValuesRelations =
   relations(appRecordValues, ({ one }) => ({
@@ -413,3 +435,9 @@ export const citiesRelations = relations(
 );
 
 
+export const appGroupsRelations = relations(
+  appGroups,
+  ({ many }) => ({
+    apps: many(apps),
+  }),
+);

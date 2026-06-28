@@ -1,0 +1,2 @@
+ALTER TABLE "app_records" ADD COLUMN "version_id" bigint NOT NULL;--> statement-breakpoint
+ALTER TABLE "app_records" ADD CONSTRAINT "app_records_version_id_app_versions_id_fk" FOREIGN KEY ("version_id") REFERENCES "public"."app_versions"("id") ON DELETE cascade ON UPDATE no action;

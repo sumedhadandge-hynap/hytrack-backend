@@ -1,226 +1,183 @@
 import {
-    Body,
-    Controller,
-    Get,
-    Param,
-    ParseIntPipe,
-    Post,
-    Req,
-    UseGuards,
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 
-import { JwtAuthGuard }
-    from '../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ProjectAppRecordsService } from './project-app-records.service';
 
-import { ProjectAppRecordsService }
-    from './project-app-records.service';
-
-import { CreateProjectAppRecordDto }
-    from './dto/create-project-app-record.dto';
-
-import { SaveProjectAppRecordDto }
-    from './dto/save-project-app-record.dto';
-
-import { ApproveProjectAppDto }
-    from './dto/approve-project-app.dto';
+import { CreateProjectAppRecordDto } from './dto/create-project-app-record.dto';
+import { SaveProjectAppRecordDto } from './dto/save-project-app-record.dto';
+import { ApproveProjectAppDto } from './dto/approve-project-app.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/project-app-records')
 export class ProjectAppRecordsController {
+  constructor(
+    private readonly projectAppRecordsService: ProjectAppRecordsService,
+  ) {}
 
-    constructor(
-        private readonly projectAppRecordsService:
-            ProjectAppRecordsService,
-    ) { }
+  @Post()
+  async create(
+    @Body() dto: CreateProjectAppRecordDto,
+    @Req() req: any,
+  ) {
+    const result =
+      await this.projectAppRecordsService.create(
+        dto,
+        req.user?.id,
+      );
 
+    return {
+      status: 'success',
+      code: 201,
+      message: 'Project app record created successfully',
+      result,
+    };
+  }
 
+  @Post('values')
+  async saveValues(
+    @Body() dto: SaveProjectAppRecordDto,
+  ) {
+    const result =
+      await this.projectAppRecordsService.saveValues(dto);
 
+    return {
+      status: 'success',
+      code: 200,
+      message: 'Values saved successfully',
+      result,
+    };
+  }
 
+  @Post(':id/submit')
+  async submit(
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const result =
+      await this.projectAppRecordsService.submit(id);
 
-    // START APP
-    @Post()
-    async create(
-        @Body()
-        dto: CreateProjectAppRecordDto,
+    return {
+      status: 'success',
+      code: 200,
+      message: 'Record submitted successfully',
+      result,
+    };
+  }
 
-        @Req()
-        req: any,
-    ) {
+  @Post(':id/approve')
+  async approve(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: ApproveProjectAppDto,
+    @Req() req: any,
+  ) {
+    const result =
+      await this.projectAppRecordsService.approve(
+        id,
+        dto,
+        req.user?.id,
+      );
 
-        const result =
-            await this.projectAppRecordsService.create(
-                dto,
-                req.user?.id,
-            );
+    return {
+      status: 'success',
+      code: 200,
+      message: 'Approval saved successfully',
+      result,
+    };
+  }
 
-        return {
-            status: 'success',
-            code: 201,
-            message: 'App started successfully',
-            result,
-        };
-    }
+  @Post(':id/complete')
+  async complete(
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const result =
+      await this.projectAppRecordsService.complete(id);
 
-    // SAVE VALUES
-    @Post('values')
-    async saveValues(
-        @Body()
-        dto: SaveProjectAppRecordDto,
-    ) {
+    return {
+      status: 'success',
+      code: 200,
+      message: 'Record completed successfully',
+      result,
+    };
+  }
 
-        const result =
-            await this.projectAppRecordsService.saveValues(
-                dto,
-            );
+  @Get('project/:projectId')
+  async findByProject(
+    @Param('projectId', ParseIntPipe) projectId: number,
+  ) {
+    const result =
+      await this.projectAppRecordsService.findByProject(
+        projectId,
+      );
 
-        return {
-            status: 'success',
-            code: 200,
-            message: 'Values saved successfully',
-            result,
-        };
-    }
+    return {
+      status: 'success',
+      code: 200,
+      message: 'Project records fetched successfully',
+      result,
+    };
+  }
 
-    // SUBMIT
-    @Post(':id/submit')
-    async submit(
-        @Param('id', ParseIntPipe)
-        id: number,
-    ) {
+  @Get('project-app/:projectAppId/schema')
+  async getSchema(
+    @Param('projectAppId', ParseIntPipe)
+    projectAppId: number,
+  ) {
+    const result =
+      await this.projectAppRecordsService.getSchema(
+        projectAppId,
+      );
 
-        const result =
-            await this.projectAppRecordsService.submit(
-                id,
-            );
+    return {
+      status: 'success',
+      code: 200,
+      message: 'Project app schema fetched successfully',
+      result,
+    };
+  }
 
-        return {
-            status: 'success',
-            code: 200,
-            message: 'Record submitted successfully',
-            result,
-        };
-    }
+  @Get('project-app/:projectAppId')
+  async findByProjectApp(
+    @Param('projectAppId', ParseIntPipe)
+    projectAppId: number,
+  ) {
+    const result =
+      await this.projectAppRecordsService.findByProjectApp(
+        projectAppId,
+      );
 
-    // APPROVE
-    @Post(':id/approve')
-    async approve(
-        @Param('id', ParseIntPipe)
-        id: number,
+    return {
+      status: 'success',
+      code: 200,
+      message: 'App records fetched successfully',
+      result,
+    };
+  }
 
-        @Body()
-        dto: ApproveProjectAppDto,
+  /**
+   * Keep this at the bottom.
+   * Otherwise /project/:projectId or /project-app/:projectAppId
+   * can be mistakenly treated as :id.
+   */
+  @Get(':id')
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const result =
+      await this.projectAppRecordsService.findOne(id);
 
-        @Req()
-        req: any,
-    ) {
-
-        const result =
-            await this.projectAppRecordsService.approve(
-                id,
-                dto,
-                req.user?.id,
-            );
-
-        return {
-            status: 'success',
-            code: 200,
-            message: 'Approval saved successfully',
-            result,
-        };
-    }
-
-    // COMPLETE
-    @Post(':id/complete')
-    async complete(
-        @Param('id', ParseIntPipe)
-        id: number,
-    ) {
-
-        const result =
-            await this.projectAppRecordsService.complete(
-                id,
-            );
-
-        return {
-            status: 'success',
-            code: 200,
-            message: 'Record completed successfully',
-            result,
-        };
-    }
-
-    // GET SINGLE RECORD
-    @Get(':id')
-    async findOne(
-        @Param('id', ParseIntPipe)
-        id: number,
-    ) {
-
-        const result =
-            await this.projectAppRecordsService.findOne(
-                id,
-            );
-
-        return {
-            status: 'success',
-            code: 200,
-            message: 'Record fetched successfully',
-            result,
-        };
-    }
-
-    // GET PROJECT RECORDS
-    @Get('project/:projectId')
-    async findByProject(
-        @Param('projectId', ParseIntPipe)
-        projectId: number,
-    ) {
-
-        const result =
-            await this.projectAppRecordsService.findByProject(
-                projectId,
-            );
-
-        return {
-            status: 'success',
-            code: 200,
-            message: 'Project records fetched successfully',
-            result,
-        };
-    }
-
-
-
-
-
-
-    @Get('project-app/:projectAppId')
-    async findByProjectApp(
-        @Param(
-            'projectAppId',
-            ParseIntPipe,
-        )
-        projectAppId: number,
-    ) {
-
-        const result =
-            await this.projectAppRecordsService
-                .findByProjectApp(
-                    projectAppId,
-                );
-
-        return {
-            status: 'success',
-            code: 200,
-            message:
-                'App records fetched successfully',
-            result,
-        };
-    }
-
-
-
-
-
-
+    return {
+      status: 'success',
+      code: 200,
+      message: 'Record fetched successfully',
+      result,
+    };
+  }
 }

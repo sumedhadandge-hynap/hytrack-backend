@@ -1,27 +1,33 @@
 import {
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
 
-export class CreateAppDto {
+export class CreateAppGroupDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsString()
   @IsNotEmpty()
-  code: string;
+  code!: string;
 
   @IsOptional()
   @IsString()
   description?: string;
 
-  @IsNumber()
-  app_type_id: number;
-
   @IsOptional()
   @IsString()
-  icon_url?: string;
+  iconUrl?: string;
+
+  @IsOptional()
+  @IsNumber()
+  sortOrder?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }

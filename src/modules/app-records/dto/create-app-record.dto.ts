@@ -1,16 +1,34 @@
 import {
+  Allow,
+  IsArray,
   IsNumber,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
+
+import { Type } from 'class-transformer';
+
+class CreateAppRecordValueDto {
+  @IsOptional()
+  @IsNumber()
+  field_id?: number;
+
+  @IsOptional()
+  @IsString()
+  field_key?: string;
+
+  @Allow()
+  value: any;
+}
 
 export class CreateAppRecordDto {
   @IsNumber()
-  app_id!: number;
+  app_id: number;
 
   @IsOptional()
   @IsNumber()
-  version_id?: number;
+  company_id?: number;
 
   @IsOptional()
   @IsNumber()
@@ -19,4 +37,10 @@ export class CreateAppRecordDto {
   @IsOptional()
   @IsString()
   status?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateAppRecordValueDto)
+  values?: CreateAppRecordValueDto[];
 }
